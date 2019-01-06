@@ -36,4 +36,4 @@ function execute(input) {
 }
 
 train(trainingData);
-console.log(execute("After years of rebuilding OTHER nations, we are finally rebuilding OUR nation - and we are restoring our confidence and our pride!"));
+console.log(execute("Travis Scott"));
