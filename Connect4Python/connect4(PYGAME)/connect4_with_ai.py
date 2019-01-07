@@ -193,12 +193,12 @@ def draw_board(board):
 		for r in range(ROW_COUNT):
 			pygame.draw.rect(screen, BLUE, (c*SQUARESIZE, r*SQUARESIZE+SQUARESIZE, SQUARESIZE, SQUARESIZE))
 			pygame.draw.circle(screen, BLACK, (int(c*SQUARESIZE+SQUARESIZE/2), int(r*SQUARESIZE+SQUARESIZE+SQUARESIZE/2)), RADIUS)
-	
+
 	for c in range(COLUMN_COUNT):
-		for r in range(ROW_COUNT):		
+		for r in range(ROW_COUNT):
 			if board[r][c] == PLAYER_PIECE:
 				pygame.draw.circle(screen, RED, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
-			elif board[r][c] == AI_PIECE: 
+			elif board[r][c] == AI_PIECE:
 				pygame.draw.circle(screen, YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
 	pygame.display.update()
 
@@ -264,7 +264,7 @@ while not game_over:
 
 
 	# # Ask for Player 2 Input
-	if turn == AI and not game_over:				
+	if turn == AI and not game_over:
 
 		#col = random.randint(0, COLUMN_COUNT-1)
 		#col = pick_best_move(board, AI_PIECE)
