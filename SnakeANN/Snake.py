@@ -105,7 +105,7 @@ class SnakeGame:
         raise Exception("Game over")
 
 if __name__ == "__main__":
-    game = SnakeGame(gui = True)
+    game = SnakeGame()
     game.start()
     for _ in range(20):
         game.step(randint(0,3))
