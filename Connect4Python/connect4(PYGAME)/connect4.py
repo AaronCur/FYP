@@ -17,6 +17,9 @@ class Connect4Game:
             board = np.zeros((ROW_COUNT,COLUMN_COUNT))
             return board
 
+        def generate_observations():
+            return board
+
         def drop_piece(board, row, col, piece):
             board[row][col] = piece
 

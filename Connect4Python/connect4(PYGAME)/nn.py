@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class Connect4NN:
-    def __init__(self, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'snake_nn.tflearn'):
+    def __init__(self, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'connect4_nn.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -25,7 +25,7 @@ class Connect4NN:
     def initial_population(self):
         training_data = []
         for _ in range(self.initial_games):
-            game = SnakeGame()
+            game = Connect4Game()
             _, _, snake, _ = game.start()
             prev_observation = self.generate_observation(snake)
             for _ in range(self.goal_steps):
@@ -80,10 +80,11 @@ class Connect4NN:
         return np.array([vector[1], -vector[0]])
 
     def model(self):
-        network = input_data(shape=[None, 4, 1], name='input')
-        network = fully_connected(network, 1, activation='linear')
-        network = regression(network, optimizer='adam', learning_rate=self.lr, loss='mean_square', name='target')
-        model = tflearn.DNN(network, tensorboard_dir='log')
+    network = input_data(shape=[None, 43, 1], name='input')
+    network = fully_connected(network, 100, activation='relu')
+    network = fully_connected(network, 1, activation='linear')
+    network = regression(network, optimizer='adam', learning_rate=self.lr, loss='mean_square', name='target')
+    model = tflearn.DNN(network, tensorboard_dir='log')
         return model
 
     def train_model(self, training_data, model):
