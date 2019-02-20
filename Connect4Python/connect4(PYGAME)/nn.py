@@ -26,37 +26,49 @@ class Connect4NN:
         training_data = []
         for _ in range(self.initial_games):
             game = Connect4Game()
-            _, _, snake, _ = game.start()
-            prev_observation = self.generate_observation(snake)
+            board = game.generate_observations();
+            prev_observation = self.generate_observation()
             for _ in range(self.goal_steps):
-                action, game_action = self.generate_action(snake)
-                done, _, snake, _  = game.step(game_action)
-                if done:
-                    training_data.append([self.add_action_to_observation(prev_observation, action), 0])
-                    break
+                action, game_action = self.generate_action(board)
+            #    done, _, snake, _  = game.step(game_action)
+                done = game.winning_move(board, 1)
+                if(game.game_over == false):
+                    training_data.append([self.add_action_to_observation(prev_observation, action, game_action), 1])
+                if(game.is_valid_location(board, action) == false):
+                    training_data.append([self.add_action_to_observation(prev_observation, action, game_action), -1000])
                 else:
-                    training_data.append([self.add_action_to_observation(prev_observation, action), 1])
-                    prev_observation = self.generate_observation(snake)
+                    training_data.append([self.add_action_to_observation(prev_observation, action, game_action), 1])
+                if done:
+                    training_data.append([self.add_action_to_observation(prev_observation, action, game_action), 0])
+                    break
+                else :
+                    training_data.append([self.add_action_to_observation(prev_observation, action, game_action), 1000])
+                    prev_observation = self.generate_observation(board)
         print(len(training_data))
         return training_data
 
-    def generate_action(self, snake):
-        action = randint(0,2) - 1
-        return action, self.get_game_action(snake, action)
+    def generate_action(self, board):
+        action = randint(0,7) - 1
+        return action, self.get_game_action(board, action)
 
-    def get_game_action(self, snake, action):
+    def get_game_action(self, board, action):
         snake_direction = self.get_snake_direction_vector(snake)
         new_direction = snake_direction
-        if action == -1:
-            new_direction = self.turn_vector_to_the_left(snake_direction)
-        elif action == 1:
-            new_direction = self.turn_vector_to_the_right(snake_direction)
-        for pair in self.vectors_and_keys:
-            if pair[0] == new_direction.tolist():
-                game_action = pair[1]
-        return game_action
+        row_val = game.get_next_open_row(board, action)
+        #if action == -1:
+        #    new_row = self.turn_vector_to_the_left(snake_direction)
+        #elif action == 1:
+        #    new_direction = self.turn_vector_to_the_right(snake_direction)
+        #for pair in self.vectors_and_keys:
+        #    if pair[0] == new_direction.tolist():
+        #        game_action = pair[1]
+        #return game_action
+        return row_val
 
     def generate_observation(self, snake):
+
+        GO
+
         snake_direction = self.get_snake_direction_vector(snake)
         barrier_left = self.is_direction_blocked(snake, self.turn_vector_to_the_left(snake_direction))
         barrier_front = self.is_direction_blocked(snake, snake_direction)
