@@ -1,9 +1,11 @@
+import math
 class HumanAgent():
     def __init__(self):
-         self.tag = "Human"
+        self.tag = "Human"
+        
+    def makeMove(self,event, squaresize):
+        posX = event.pos[0]
+        return int(math.floor(posX/squaresize))
 
-    def makeMove(self, cc):
-        return random.randint(0, cc-1)
-
-    def getName(self):
+    def getTag(self):
         return self.tag

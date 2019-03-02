@@ -7,5 +7,5 @@ class RandomAgent():
     def makeMove(self, cc):
         return random.randint(0, cc-1)
 
-    def getName(self):
+    def getTag(self):
         return self.tag

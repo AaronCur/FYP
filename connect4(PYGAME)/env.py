@@ -98,7 +98,7 @@ class Connect4Env:
                     if event.type == pygame.QUIT:
                             sys.exit()
                 if self.turn == self.PLAYER1 and not self.game_over:
-                    if(player1.getName() == "Human"):
+                    if(player1.getTag() == "Human"):
 
 
                         if event.type == pygame.MOUSEMOTION:
@@ -113,9 +113,7 @@ class Connect4Env:
                             pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
                             #print(event.pos)
                             # Ask for Player 1 Input
-                            
-                            posx = event.pos[0]
-                            col = int(math.floor(posx/self.SQUARESIZE))
+                            col = player1.makeMove(event, self.SQUARESIZE)
 
                             if self.game.is_valid_location(self.board, col):
                                 row = self.game.get_next_open_row(self.board, col)
@@ -133,7 +131,14 @@ class Connect4Env:
                                 self.draw_board(self.board, self.screen, pygame)
                                 pygame.time.wait(250)
                     else:
-                        col = player1.makeMove(self.COLUMN_COUNT)
+                        tag = player1.getTag()
+
+                        if tag == "Random":
+                            col = player1.makeMove(self.COLUMN_COUNT)
+                        elif tag == "BestMove":
+                            col = player1.makeMove(self.COLUMN_COUNT)
+                        elif tag == "MiniMax":
+                            col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER1_PIECE)
                         #col = pick_best_move(board, AI_PIECE)
                         #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
 
@@ -156,7 +161,7 @@ class Connect4Env:
 
                 # # Ask for Player 2 Input
                 if self.turn == self.PLAYER2 and not self.game_over:
-                    if(player2.getName() == "Human"):
+                    if(player2.getTag() == "Human"):
                         if event.type == pygame.MOUSEMOTION:
                             pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
                             posx = event.pos[0]
@@ -168,10 +173,8 @@ class Connect4Env:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
                             #print(event.pos)
-                            # Ask for Player 1 Input
-                            
-                            posx = event.pos[0]
-                            col = int(math.floor(posx/self.SQUARESIZE))
+                            # Ask for Player 2 Input
+                            col = player2.makeMove(event, self.SQUARESIZE)
 
                             if self.game.is_valid_location(self.board, col):
                                 row = self.game.get_next_open_row(self.board, col)
@@ -191,9 +194,15 @@ class Connect4Env:
 
 
                     else:
-                        col = player2.makeMove(self.COLUMN_COUNT)
-                        #col = pick_best_move(board, AI_PIECE)
-                        #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
+                        tag = player2.getTag()
+
+                        if tag == "Random":
+                            col = player2.makeMove(self.COLUMN_COUNT)
+                        elif tag == "BestMove":
+                            col = player2.makeMove(self.COLUMN_COUNT)
+                        elif tag == "MiniMax":
+                            col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER2_PIECE)
+
 
                         if self.game.is_valid_location(self.board, col):
                             pygame.time.wait(250)
