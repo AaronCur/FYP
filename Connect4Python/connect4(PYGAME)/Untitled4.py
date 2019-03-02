@@ -1,14 +1,8 @@
-
-# coding: utf-8
-
-# In[ ]:
-
 import numpy as np
 import pygame
 import sys
 import math
 import random
-
 
 class RandomAgent():
  
@@ -18,8 +12,7 @@ class RandomAgent():
 class HumanAgent():
     def __init__(self):
             self.playerNum = 1
-           
- 
+            
     def makeMove(self, pygame, screen):
          if event.type == pygame.MOUSEBUTTONDOWN:
                     pygame.draw.rect(screen, game.BG, (0,0, width, SQUARESIZE))
@@ -29,7 +22,6 @@ class HumanAgent():
                     posx = event.pos[0]
                     return int(math.floor(posx/SQUARESIZE))
                     
-
 class Connect4Game:
         def __init__(self):
             self.BOARD = (0,0,255)
@@ -107,7 +99,6 @@ class Connect4Game:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*SQUARESIZE+SQUARESIZE/2), height-int(r*SQUARESIZE+SQUARESIZE/2)), RADIUS)
             pygame.display.update()
 
-    
 if __name__ == "__main__":
         randomAgent = RandomAgent()
         human = HumanAgent()
@@ -171,7 +162,6 @@ if __name__ == "__main__":
                         print_board(board)
                         draw_board(board)
 
-
         # # Ask for Player 2 Input
         if turn == 1 and not game_over:
 
@@ -197,17 +187,7 @@ if __name__ == "__main__":
         if game_over:
             pygame.time.wait(3000)
 
-
-# In[3]:
-
-
 board = game.create_board()
-
-
-# In[ ]:
-
-
-
 
 class HumanAgent():
     def __init__(self):
@@ -273,11 +253,3 @@ class HumanAgent():
             previous_value = value
 
         return self.env.get_reward()
-
-
-# In[17]:
-
-
-
-
-
