@@ -3,7 +3,6 @@
 
 # In[ ]:
 
-
 import numpy as np
 import pygame
 import sys
@@ -30,11 +29,6 @@ class HumanAgent():
                     posx = event.pos[0]
                     return int(math.floor(posx/SQUARESIZE))
                     
-                   
-
-
-                
-
 
 class Connect4Game:
         def __init__(self):
