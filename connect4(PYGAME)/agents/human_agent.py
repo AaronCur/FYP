@@ -1,8 +1,6 @@
-import random
-
-class RandomAgent():
+class HumanAgent():
     def __init__(self):
-         self.tag = "Random"
+         self.tag = "Human"
 
     def makeMove(self, cc):
         return random.randint(0, cc-1)

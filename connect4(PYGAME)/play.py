@@ -1,6 +1,8 @@
 import tensorflow as tf
 ##from agents.human_agent import HumanAgent
 from env import Connect4Env
+from agents.random_agent import RandomAgent
+from agents.human_agent import HumanAgent
 import pygame
 
 
@@ -8,8 +10,13 @@ def main():
    ## log_dir = './log/TD2'
 
     env = Connect4Env()
+    player1 = RandomAgent()
+    #player2 = RandomAgent()
 
-    env.play(1,2)
+   # player1 = HumanAgent()
+    player2 = HumanAgent()
+    
+    env.play(player1,player2)
 
 
    ## model = ValueModel(env.feature_vector_size, 100)
