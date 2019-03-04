@@ -136,7 +136,7 @@ class Connect4Env:
                         if tag == "Random":
                             col = player1.makeMove(self.COLUMN_COUNT)
                         elif tag == "BestMove":
-                            col = player1.makeMove(self.COLUMN_COUNT)
+                            col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                         elif tag == "MiniMax":
                             col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER1_PIECE)
                         #col = pick_best_move(board, AI_PIECE)
@@ -199,7 +199,7 @@ class Connect4Env:
                         if tag == "Random":
                             col = player2.makeMove(self.COLUMN_COUNT)
                         elif tag == "BestMove":
-                            col = player2.makeMove(self.COLUMN_COUNT)
+                             col = player1.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                         elif tag == "MiniMax":
                             col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER2_PIECE)
 

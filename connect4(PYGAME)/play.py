@@ -15,13 +15,13 @@ def main():
 
     #player1 = HumanAgent()
     #player1 = RandomAgent()
-    #player1 = BestMoveAgent()
-    player1 = MiniMaxAgent()
+    player1 = BestMoveAgent()
+    #player1 = MiniMaxAgent()
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
-    #player2 = BestMoveAgent()
-    player2 = MiniMaxAgent()
+    player2 = BestMoveAgent()
+    #player2 = MiniMaxAgent()
     
     
     
