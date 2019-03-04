@@ -142,17 +142,14 @@ class SnakeNN:
 
     def visualise(self):
         nn_model = self.model()
-        nn_model.load(self.filename)
+        nn_model.load("SnakeANN/"+self.filename)
         self.visualise_game(nn_model)
 
     def test(self):
         nn_model = self.model()
-        nn_model.load(self.filename)
+        #nn_model.load(self.filename)
         self.test_model(nn_model)
 
 if __name__ == "__main__":
-    SnakeNN().train()
-    game = SnakeGame(gui = True)
-    game.start()
-    for _ in range(20):
-        game.step(randint(0,3))
+    SnakeNN().visualise()
+    

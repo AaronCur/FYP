@@ -18,6 +18,7 @@ def main():
     # agent = TDAgent('agent_0', model, env)
     #agent2 = ForwardAgent('agent_0', model, env)
     agent = BackwardAgent('agent_0', model, env)
+    agent2 = BackwardAgent('agent_0', model, env)
     #agent = RandomAgent('agent_0', model, env)
     #agent = LeafAgent('agent_0', model, env)
     random_agent = RandomAgent(env)
@@ -26,7 +27,7 @@ def main():
     with tf.train.SingularMonitoredSession(checkpoint_dir=log_dir) as sess:
         agent.sess = sess
         env.sess = sess
-        players = [random_agent, agent]
+        players = [agent2, agent]
         env.play(players, verbose=True)
 
 if __name__ == "__main__":
