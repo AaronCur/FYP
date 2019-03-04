@@ -88,11 +88,9 @@ class Connect4Board:
 
         def evaluate_window(self,window, piece):
             score = 0
-
+            opp_piece = self.PLAYER1_PIECE
             if piece == self.PLAYER1_PIECE:
                 opp_piece = self.PLAYER2_PIECE
-            else:
-                opp_piece = self.PLAYER1_PIECE
 
             if window.count(piece) == 4:
                 score += 100
