@@ -6,13 +6,13 @@ import math
 import random
 
 class Connect4Env:
-    def __init__(self):
-        self.SQUARESIZE = 100
+    def __init__(self, squaresize,row,col,game):
+        self.SQUARESIZE = squaresize
         self. RADIUS = int(self.SQUARESIZE/2 - 5)
-        self.ROW_COUNT = 6
-        self.COLUMN_COUNT = 7
+        self.ROW_COUNT = row
+        self.COLUMN_COUNT = col
 
-        self.game = Connect4Board(self.SQUARESIZE, self.RADIUS, self.COLUMN_COUNT, self.ROW_COUNT)
+        self.game = game
         pygame.init()
 
         self.WIDTH = self.game.COLUMN_COUNT * self.SQUARESIZE
@@ -138,7 +138,7 @@ class Connect4Env:
                         elif tag == "BestMove":
                             col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                         elif tag == "MiniMax":
-                            col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER1_PIECE)
+                            col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                         #col = pick_best_move(board, AI_PIECE)
                         #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
 
@@ -199,9 +199,9 @@ class Connect4Env:
                         if tag == "Random":
                             col = player2.makeMove(self.COLUMN_COUNT)
                         elif tag == "BestMove":
-                             col = player1.makeMove(self.board, self.PLAYER2_PIECE, self.game)
+                             col = player2.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                         elif tag == "MiniMax":
-                            col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, PLAYER2_PIECE)
+                            col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER2_PIECE)
 
 
                         if self.game.is_valid_location(self.board, col):

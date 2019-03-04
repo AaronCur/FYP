@@ -11,17 +11,22 @@ import pygame
 
 def main():
 
-    env = Connect4Env()
+    SQUARESIZE = 100
+    RADIUS = int(SQUARESIZE/2 - 5)
+    ROW_COUNT = 6
+    COLUMN_COUNT = 7
+    game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
+    env = Connect4Env(SQUARESIZE,ROW_COUNT,COLUMN_COUNT,game)
 
     #player1 = HumanAgent()
     #player1 = RandomAgent()
-    player1 = BestMoveAgent()
-    #player1 = MiniMaxAgent()
+    #player1 = BestMoveAgent()
+    player1 = MiniMaxAgent(game)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
-    player2 = BestMoveAgent()
-    #player2 = MiniMaxAgent()
+    #player2 = BestMoveAgent()
+    player2 = MiniMaxAgent(game)
     
     
     

@@ -7,32 +7,31 @@ class MiniMaxAgent():
         self.game = game
 
     def makeMove(self ,board, depth, alpha, beta, maximizingPlayer, PIECE):
-        
         if PIECE == 1:
             OTHERPIECE = 2
         else:
             OTHERPIECE = 1
         
-        valid_locations = self.get_valid_locations(board)
-        is_terminal = self.is_terminal_node(board)
+        valid_locations = self.game.get_valid_locations(board)
+        is_terminal = self.game.is_terminal_node(board)
         if depth == 0 or is_terminal:
             if is_terminal:
-                if self.winning_move(board, PIECE):
+                if self.game.winning_move(board, PIECE):
                     return (None, 100000000000000)
-                elif self.winning_move(board, OTHERPIECE):
+                elif self.game.winning_move(board, OTHERPIECE):
                     return (None, -10000000000000)
                 else: # Game is over, no more valid moves
                     return (None, 0)
             else: # Depth is zero
-                return (None, self.score_position(board, PIECE))
+                return (None, self.game.score_position(board, PIECE))
         if maximizingPlayer:
             value = -math.inf
             column = random.choice(valid_locations)
             for col in valid_locations:
-                row = self.get_next_open_row(board, col)
+                row = self.game.get_next_open_row(board, col)
                 b_copy = board.copy()
-                self.drop_piece(b_copy, row, col, PIECE)
-                new_score = makeMove(b_copy, depth-1, alpha, beta, False)[1]
+                self.game.drop_piece(b_copy, row, col, PIECE)
+                new_score = self.makeMove(b_copy, depth-1, alpha, beta, False, PIECE)[1]
                 if new_score > value:
                     value = new_score
                     column = col
@@ -45,10 +44,10 @@ class MiniMaxAgent():
             value = math.inf
             column = random.choice(valid_locations)
             for col in valid_locations:
-                row = self.get_next_open_row(board, col)
+                row = self.game.get_next_open_row(board, col)
                 b_copy = board.copy()
-                self.drop_piece(b_copy, row, col, OTHERPIECE)
-                new_score = makeMove(b_copy, depth-1, alpha, beta, True)[1]
+                self.game.drop_piece(b_copy, row, col, OTHERPIECE)
+                new_score = self.makeMove(b_copy, depth-1, alpha, beta, True, OTHERPIECE)[1]
                 if new_score < value:
                     value = new_score
                     column = col
