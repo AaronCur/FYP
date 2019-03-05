@@ -74,7 +74,6 @@ class SnakeNN:
         return point.tolist() in snake[:-1] or point[0] == 0 or point[1] == 0 or point[0] == 21 or point[1] == 21
 
     def turn_vector_to_the_left(self, vector):
-        #Banter
         return np.array([-vector[1], vector[0]])
 
     def turn_vector_to_the_right(self, vector):

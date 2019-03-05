@@ -6,6 +6,7 @@ from agents.random_agent import RandomAgent
 from agents.human_agent import HumanAgent
 from agents.best_move_agent import BestMoveAgent
 from agents.minimax_agent import MiniMaxAgent
+from agents.ann_agent import AnnAgent
 import pygame
 
 
@@ -21,12 +22,14 @@ def main():
     #player1 = HumanAgent()
     #player1 = RandomAgent()
     #player1 = BestMoveAgent()
-    player1 = MiniMaxAgent(game)
+    #player1 = MiniMaxAgent(game)
+    player1 = AnnAgent(game)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
     #player2 = BestMoveAgent()
     player2 = MiniMaxAgent(game)
+    #player2 = AnnAgent(game)
     
     
     

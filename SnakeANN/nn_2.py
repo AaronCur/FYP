@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class SnakeNN:
-    def __init__(self, initial_games = 10000, test_games = 1000, goal_steps = 2000, lr = 1e-2, filename = 'snake_nn_2.tflearn'):
+    def __init__(self, initial_games = 10, test_games = 1000, goal_steps = 2000, lr = 1e-2, filename = 'snake_nn_2.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -174,7 +174,7 @@ class SnakeNN:
 
     def visualise(self):
         nn_model = self.model()
-        nn_model.load(self.filename)
+        nn_model.load("SnakeANN/"+self.filename)
         self.visualise_game(nn_model)
 
     def test(self):
@@ -183,7 +183,4 @@ class SnakeNN:
         self.test_model(nn_model)
 
 if __name__ == "__main__":
-    game = SnakeGame(gui = True)
-    game.start()
-    for _ in range(20):
-        game.step(randint(0,3))
+    SnakeNN().train()
