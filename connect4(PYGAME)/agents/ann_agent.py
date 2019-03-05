@@ -14,9 +14,17 @@ class AnnAgent:
         self.goal_steps = goal_steps
         self.lr = lr
         self.filename = filename
-        self.tag = "ANN"
+        self.tag = "Ann"
         self.game = game
         self.nn_model = self.init_model()
+
+    def getTag(self):
+        return self.tag
+
+    def generate_observation(self, board):
+        #Flatten board array
+        flattened = np.array(board).reshape(-1, 42, 1)
+        return flattened
 
     def init_model(self):
         nn_model = self.model()
@@ -30,3 +38,6 @@ class AnnAgent:
         network = regression(network, optimizer='adam',learning_rate=self.lr, loss='mean_square', name='target')
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model 
+    
+    def makeMove(self, board):
+        prev_observation = self.generate_observation(board)
