@@ -17,6 +17,7 @@ class AnnAgent:
         self.tag = "Ann"
         self.game = game
         self.nn_model = self.init_model()
+        self.training_data = []
 
     def getTag(self):
         return self.tag
@@ -33,6 +34,13 @@ class AnnAgent:
         nn_model = self.model()
         #nn_model.load(self.filename)
         return nn_model
+
+    def train_model(self, training_data, model):
+        X = np.array([i[0] for i in training_data]).reshape(-1, 5, 1)
+        y = np.array([i[1] for i in training_data]).reshape(-1, 1)
+        model.fit(X, y, n_epoch=3, shuffle=True, run_id=self.filename)
+        model.save(self.filename)
+        return model
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
@@ -51,5 +59,12 @@ class AnnAgent:
         
         action = np.argmax(np.array(predictions))
 
-        return action
+        #if move isnt valid redo move
+        if(self.game.is_valid_location(board, action)):
+             self.training_data.append([self.add_action_to_observation(prev_observation, action), gamse])
+            return action
+        else:
+            self.makeMove(board)
+
+        
 
