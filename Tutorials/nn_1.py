@@ -1,33 +1,4 @@
-from Snake import SnakeGame
-from random import randint
-import numpy as np
-import tflearn
-import math
-from tflearn.layers.core import input_data, fully_connected
-from tflearn.layers.estimator import regression
-from statistics import mean
-from collections import Counter
-
-class SnakeNN:
-    def __init__(self, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'snake_nn.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
-        self.lr = lr
-        self.filename = filename
-        self.vectors_and_keys = [
-                [[-1, 0], 0],
-                [[0, 1], 1],
-                [[1, 0], 2],
-                [[0, -1], 3]
-                ]
-
-    def initial_population(self):
-        training_data = []
-        for _ in range(self.initial_games):
-            game = SnakeGame()
-            _, _, snake, _ = game.start()
-            prev_observation = self.generate_observation(snake)
+e_observation(snake)
             for _ in range(self.goal_steps):
                 action, game_action = self.generate_action(snake)
                 done, _, snake, _  = game.step(game_action)
@@ -142,14 +113,13 @@ class SnakeNN:
 
     def visualise(self):
         nn_model = self.model()
-        nn_model.load("SnakeANN/"+self.filename)
+        nn_model.load(self.filename)
         self.visualise_game(nn_model)
 
     def test(self):
         nn_model = self.model()
-        nn_model.load("SnakeANN/"+self.filename)
+        nn_model.load(self.filename)
         self.test_model(nn_model)
 
 if __name__ == "__main__":
-    SnakeNN().visualise()
-    
+    SnakeNN().train()
