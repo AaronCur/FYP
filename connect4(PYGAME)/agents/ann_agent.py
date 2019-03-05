@@ -36,7 +36,7 @@ class AnnAgent:
         return nn_model
 
     def train_model(self, training_data, model):
-        X = np.array([i[0] for i in training_data]).reshape(-1, 5, 1)
+        X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
         y = np.array([i[1] for i in training_data]).reshape(-1, 1)
         model.fit(X, y, n_epoch=3, shuffle=True, run_id=self.filename)
         model.save(self.filename)
@@ -50,7 +50,7 @@ class AnnAgent:
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model 
     
-    def makeMove(self, board):
+    def makeMove(self, board, piece):
         prev_observation = self.generate_observation(board)
         predictions = []
 
@@ -61,10 +61,18 @@ class AnnAgent:
 
         #if move isnt valid redo move
         if(self.game.is_valid_location(board, action)):
-             self.training_data.append([self.add_action_to_observation(prev_observation, action), gamse])
+            boardCopy = board.copy()
+            row = self.game.get_next_open_row(boardCopy, action)
+            self.game.drop_piece(boardCopy, row, action,piece)
+            score = self.game.score_position(boardCopy,piece)
+            self.training_data.append([self.add_action_to_observation(prev_observation, action), score])
+            self.nn_model = self.train_model(self.training_data, self.nn_model)
             return action
         else:
-            self.makeMove(board)
+            boardCopy = board.copy()
+            self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
+            self.nn_model = self.train_model(self.training_data, self.nn_model)
+            self.makeMove(board, piece)
 
         
 
