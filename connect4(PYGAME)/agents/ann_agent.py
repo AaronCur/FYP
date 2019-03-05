@@ -25,6 +25,9 @@ class AnnAgent:
         #Flatten board array
         flattened = np.array(board).reshape(-1, 42, 1)
         return flattened
+    
+    def add_action_to_observation(self, observation, action):
+        return np.append([action], observation)
 
     def init_model(self):
         nn_model = self.model()
@@ -41,3 +44,12 @@ class AnnAgent:
     
     def makeMove(self, board):
         prev_observation = self.generate_observation(board)
+        predictions = []
+
+        for action in range(0,7):
+            predictions.append(self.nn_model.predict(self.add_action_to_observation(prev_observation, action).reshape(-1,43,1)))
+        
+        action = np.argmax(np.array(predictions))
+
+        return action
+

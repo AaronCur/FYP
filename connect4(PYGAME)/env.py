@@ -140,7 +140,7 @@ class Connect4Env:
                         elif tag == "MiniMax":
                             col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                         elif tag == "Ann":
-                            player1.makeMove(self.board)
+                            col = player1.makeMove(self.board)
                         #col = pick_best_move(board, AI_PIECE)
                         #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
 
@@ -205,7 +205,7 @@ class Connect4Env:
                         elif tag == "MiniMax":
                             col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                         elif tag == "Ann":
-                            player2.makeMove(self.board)
+                            col = player2.makeMove(self.board)
 
                         if self.game.is_valid_location(self.board, col):
                             pygame.time.wait(250)
