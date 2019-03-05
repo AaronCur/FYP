@@ -26,9 +26,9 @@ def main():
     player1 = AnnAgent(game)
 
     #player2 = HumanAgent()
-    #player2 = RandomAgent()
+    player2 = RandomAgent()
     #player2 = BestMoveAgent()
-    player2 = MiniMaxAgent(game)
+    #player2 = MiniMaxAgent(game)
     #player2 = AnnAgent(game)
     
     

@@ -1,4 +1,5 @@
 from random import randint
+import random
 import numpy as np
 import tflearn
 import math
@@ -32,13 +33,13 @@ class AnnAgent:
 
     def init_model(self):
         nn_model = self.model()
-        #nn_model.load(self.filename)
+        nn_model.load(self.filename)
         return nn_model
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
         y = np.array([i[1] for i in training_data]).reshape(-1, 1)
-        model.fit(X, y, n_epoch=3, shuffle=True, run_id=self.filename)
+        model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
         model.save(self.filename)
         return model
 
@@ -60,19 +61,29 @@ class AnnAgent:
         action = np.argmax(np.array(predictions))
 
         #if move isnt valid redo move
+        #temp = self.game.is_valid_location(board, action)
+
         if(self.game.is_valid_location(board, action)):
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)
             self.game.drop_piece(boardCopy, row, action,piece)
             score = self.game.score_position(boardCopy,piece)
             self.training_data.append([self.add_action_to_observation(prev_observation, action), score])
-            self.nn_model = self.train_model(self.training_data, self.nn_model)
+            #self.nn_model = self.train_model(self.training_data, self.nn_model)
             return action
         else:
             boardCopy = board.copy()
             self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
             self.nn_model = self.train_model(self.training_data, self.nn_model)
-            self.makeMove(board, piece)
+            #self.makeMove(board, piece)
+            action = random.randint(0, 7)
+
+            while self.game.is_valid_location(board, action) == False:
+                action = random.randint(0, 7)
+            self.training_data.append(
+                    [self.add_action_to_observation(prev_observation, action), -10000])
+           # self.nn_model = self.train_model(self.training_data, self.nn_model)
+            return action
 
         
 

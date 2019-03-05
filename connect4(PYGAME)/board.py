@@ -26,6 +26,7 @@ class Connect4Board:
 
         def is_valid_location(self, board, col):
             temp = board[self.ROW_COUNT-1][col]
+            
             return board[self.ROW_COUNT-1][col] == 0
 
         def get_next_open_row(self,board, col):
