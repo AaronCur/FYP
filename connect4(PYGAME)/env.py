@@ -18,9 +18,9 @@ class Connect4Env:
         self.WIDTH = self.game.COLUMN_COUNT * self.SQUARESIZE
         self.HEIGHT = (self.game.ROW_COUNT+1) * self.SQUARESIZE
 
-        size = (self.WIDTH, self.HEIGHT)
+        self.size = (self.WIDTH, self.HEIGHT)
 
-        self.screen = pygame.display.set_mode(size)
+        self.screen = pygame.display.set_mode(self.size)
         
         self.board = self.game.create_board()
 
@@ -85,13 +85,19 @@ class Connect4Env:
             pygame.display.update()
 
     def play(self,player1, player2):
-    
+        
+          for i in range(100):
+            self.screen = pygame.display.set_mode(self.size)
+            myfont = pygame.font.SysFont("monospace", 75)
+            self.game_over = False
+           
+            self.board = self.game.create_board()
+            print("episode "+ str(i))
+
             self.draw_board(self.board, self.screen, pygame)
             pygame.display.update()
 
-            myfont = pygame.font.SysFont("monospace", 75)
-            
-
+        
             while not self.game_over:
 
                 for event in pygame.event.get():
@@ -123,6 +129,8 @@ class Connect4Env:
                                     label = myfont.render("Player 1 wins!!", 1, self.RED)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
+                                    if(player2.getTag() == "Ann"):
+                                        player2.train(-100)
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
@@ -153,6 +161,10 @@ class Connect4Env:
                                 label = myfont.render("Player 1 wins!!", 1, self.RED)
                                 self.screen.blit(label, (40,10))
                                 self.game_over = True
+                                if(player2.getTag() == "Ann"):
+                                    player2.train(-100)
+                                elif (player1.getTag() == "Ann"):
+                                    player1.train(100)
 
                             self.print_board(self.board)
                             self.draw_board(self.board, self.screen, pygame)
@@ -186,6 +198,9 @@ class Connect4Env:
                                     label = myfont.render("Player 2 wins!!", 1, self.YELLOW)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
+                                    
+                                    if (player1.getTag() == "Ann"):
+                                        player1.train(-100)
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
@@ -216,6 +231,10 @@ class Connect4Env:
                                 label = myfont.render("Player 2 wins!!", 1, self.YELLOW)
                                 self.screen.blit(label, (40,10))
                                 self.game_over = True
+                                if(player2.getTag() == "Ann"):
+                                    player2.train(100)
+                                elif (player1.getTag() == "Ann"):
+                                    player1.train(-100)
 
                             self.print_board(self.board)
                             self.draw_board(self.board, self.screen, pygame)

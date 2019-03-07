@@ -19,6 +19,7 @@ class AnnAgent:
         self.game = game
         self.nn_model = self.init_model()
         self.training_data = []
+        self.board_states = []
 
     def getTag(self):
         return self.tag
@@ -35,6 +36,14 @@ class AnnAgent:
         nn_model = self.model()
         nn_model.load(self.filename)
         return nn_model
+    def train(self, reward):
+        training_data = []
+        for val in self.board_states:
+            training_data.append(
+               [val, reward])
+        
+        self.nn_model = self.train_model(training_data, self.nn_model)
+
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -68,21 +77,23 @@ class AnnAgent:
             row = self.game.get_next_open_row(boardCopy, action)
             self.game.drop_piece(boardCopy, row, action,piece)
             score = self.game.score_position(boardCopy,piece)
-            self.training_data.append([self.add_action_to_observation(prev_observation, action), score])
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
+            self.board_states.append([self.add_action_to_observation(prev_observation, action)])
+            self.training_data.append(
+                [self.add_action_to_observation(prev_observation, action), 1])
             return action
         else:
             boardCopy = board.copy()
+            self.board_states.append([self.add_action_to_observation(prev_observation, action)])
             self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-            self.nn_model = self.train_model(self.training_data, self.nn_model)
+            #self.nn_model = self.train_model(self.training_data, self.nn_model)
             #self.makeMove(board, piece)
-            action = random.randint(0, 7)
+            action = random.randint(0, 6)
 
             while self.game.is_valid_location(board, action) == False:
-                action = random.randint(0, 7)
+                action = random.randint(0, 6)
             self.training_data.append(
                     [self.add_action_to_observation(prev_observation, action), -10000])
-           # self.nn_model = self.train_model(self.training_data, self.nn_model)
+            #self.nn_model = self.train_model(self.training_data, self.nn_model)
             return action
 
         
