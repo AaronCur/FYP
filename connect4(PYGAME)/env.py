@@ -126,7 +126,7 @@ class Connect4Env:
                                 self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
 
                                 if self.game.winning_move(self.board, self.PLAYER1_PIECE):
-                                    label = myfont.render("Player 1 wins!!", 1, self.RED)
+                                    label = myfont.render("Human 1 wins!!", 1, self.RED)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
                                     if(player2.getTag() == "Ann"):
@@ -158,7 +158,7 @@ class Connect4Env:
                             self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
 
                             if self.game.winning_move(self.board, self.PLAYER1_PIECE):
-                                label = myfont.render("Player 1 wins!!", 1, self.RED)
+                                label = myfont.render(str(tag) +" wins!!", 1, self.RED)
                                 self.screen.blit(label, (40,10))
                                 self.game_over = True
                                 if(player2.getTag() == "Ann"):
@@ -195,7 +195,7 @@ class Connect4Env:
                                 self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
 
                                 if self.game.winning_move(self.board, self.PLAYER2_PIECE):
-                                    label = myfont.render("Player 2 wins!!", 1, self.YELLOW)
+                                    label = myfont.render("Human 2 wins!!", 1, self.YELLOW)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
                                     
@@ -228,7 +228,7 @@ class Connect4Env:
                             self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
 
                             if self.game.winning_move(self.board, self.PLAYER2_PIECE):
-                                label = myfont.render("Player 2 wins!!", 1, self.YELLOW)
+                                label = myfont.render(str(tag)+" wins!!", 1, self.YELLOW)
                                 self.screen.blit(label, (40,10))
                                 self.game_over = True
                                 if(player2.getTag() == "Ann"):
