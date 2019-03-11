@@ -34,7 +34,7 @@ class AnnAgent:
 
     def init_model(self):
         nn_model = self.model()
-        nn_model.load(self.filename)
+       # nn_model.load(self.filename)
         return nn_model
     def train(self, reward):
         training_data = []
@@ -66,35 +66,39 @@ class AnnAgent:
 
         for action in range(0,7):
             predictions.append(self.nn_model.predict(self.add_action_to_observation(prev_observation, action).reshape(-1,43,1)))
-        
+            if self.game.is_valid_location(board, action) == False:
+               predictions[action] = -100000
+           
+                
+
         action = np.argmax(np.array(predictions))
 
         #if move isnt valid redo move
         #temp = self.game.is_valid_location(board, action)
 
-        if(self.game.is_valid_location(board, action)):
-            boardCopy = board.copy()
-            row = self.game.get_next_open_row(boardCopy, action)
-            self.game.drop_piece(boardCopy, row, action,piece)
-            score = self.game.score_position(boardCopy,piece)
-            self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-            self.training_data.append(
-                [self.add_action_to_observation(prev_observation, action), 1])
-            return action
-        else:
-            boardCopy = board.copy()
-            self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-            self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
+       # if(self.game.is_valid_location(board, action)):
+        #boardCopy = board.copy()
+            #row = self.game.get_next_open_row(boardCopy, action)
+            #self.game.drop_piece(boardCopy, row, action,piece)
+            #score = self.game.score_position(boardCopy,piece)
+        self.board_states.append([self.add_action_to_observation(prev_observation, action)])
+            #self.training_data.append(
+             #   [self.add_action_to_observation(prev_observation, action), 1])
+        return action
+       # else:
+           # boardCopy = board.copy()
+           # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
+            #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
             #self.makeMove(board, piece)
-            action = random.randint(0, 6)
+           # action = random.randint(0, 6)
 
-            while self.game.is_valid_location(board, action) == False:
-                action = random.randint(0, 6)
-            self.training_data.append(
-                    [self.add_action_to_observation(prev_observation, action), -10000])
+           # while self.game.is_valid_location(board, action) == False:
+              #  action = random.randint(0, 6)
+           # self.training_data.append(
+                    #[self.add_action_to_observation(prev_observation, action), -10000])
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
-            return action
+           # return action
 
         
 
