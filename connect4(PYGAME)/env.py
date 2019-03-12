@@ -92,7 +92,7 @@ class Connect4Env:
         plt.figure()
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
-        plt.plot(np.arange(len(history)), history,
+        plt.plot(np.arange(100), history,
                label='Win Rate')
     
         plt.legend()
@@ -168,7 +168,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player1.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                                col, minimax_score = player1.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                             elif tag == "Ann":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
@@ -241,7 +241,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player2.makeMove(self.board, 5, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                                col, minimax_score = player2.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER1_PIECE)
 
