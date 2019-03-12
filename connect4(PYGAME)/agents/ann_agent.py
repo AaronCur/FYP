@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class AnnAgent:
-    def __init__(self, game, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'ann_agent.tflearn'):
+    def __init__(self, game, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'ann_agent_random.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -20,6 +20,7 @@ class AnnAgent:
         self.nn_model = self.init_model()
         self.training_data = []
         self.board_states = []
+        self.wins = 0
 
     def getTag(self):
         return self.tag
@@ -37,11 +38,14 @@ class AnnAgent:
        # nn_model.load(self.filename)
         return nn_model
     def train(self, reward):
-        training_data = []
-        for val in self.board_states:
-            training_data.append(
-               [val, reward])
         
+        training_data = []
+        
+        for val in self.board_states:
+            self.training_data.append(
+               [val, reward])
+
+        self.board_states = []        
         self.nn_model = self.train_model(training_data, self.nn_model)
 
 
