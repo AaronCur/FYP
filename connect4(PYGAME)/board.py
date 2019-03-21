@@ -59,6 +59,39 @@ class Connect4Board:
                     if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
                         return True
 
+        def can_win(self, board, piece):
+            # Check horizontal locations for winable move
+            for c in range(self.COLUMN_COUNT-3):
+                for r in range(self.ROW_COUNT):
+                    if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == self.EMPTY:
+                        return True
+                    if board[r][c] == self.EMPTY and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == piece:
+                        return True
+
+            # Check vertical locations for winable move
+            for c in range(self.COLUMN_COUNT):
+                for r in range(self.ROW_COUNT-3):
+                    if board[r][c] == piece and board[r+1][c] == piece and board[r+2][c] == piece and board[r+3][c] == self.EMPTY:
+                        return True
+                    if board[r][c] == self.EMPTY and board[r+1][c] == piece and board[r+2][c] == piece and board[r+3][c] == piece:
+                        return True
+
+            # Check positively sloped diaganols for winable move
+            for c in range(self.COLUMN_COUNT-3):
+                for r in range(self.ROW_COUNT-3):
+                    if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == self.EMPTY:
+                        return True
+                    if board[r][c] == self.EMPTY and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
+                        return True
+
+            # Check negatively sloped diaganols for winable move
+            for c in range(self.COLUMN_COUNT-3):
+                for r in range(3, self.ROW_COUNT):
+                    if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == self.EMPTY:
+                        return True
+                    if board[r][c] == self.EMPTY and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
+                        return True
+
         def get_valid_locations(self, board):
             valid_locations = []
             for col in range(self.COLUMN_COUNT):

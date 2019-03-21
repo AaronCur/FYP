@@ -7,6 +7,7 @@ from agents.human_agent import HumanAgent
 from agents.best_move_agent import BestMoveAgent
 from agents.minimax_agent import MiniMaxAgent
 from agents.ann_agent import AnnAgent
+from agents.ann_agent2 import AnnAgent2
 import pygame
 
 
@@ -19,17 +20,19 @@ def main():
     game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
     env = Connect4Env(SQUARESIZE,ROW_COUNT,COLUMN_COUNT,game)
 
-    #player1 = HumanAgent()
+    player1 = HumanAgent()
     #player1 = RandomAgent()
     #player1 = BestMoveAgent()
     #player1 = MiniMaxAgent(game)
-    player1 = AnnAgent(game)
+    #player1 = AnnAgent(game)
+    #player1 = AnnAgent2(game)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
     #player2 = BestMoveAgent()
-    player2 = MiniMaxAgent(game)
+    #player2 = MiniMaxAgent(game)
     #player2 = AnnAgent(game)
+    player2 = AnnAgent2(game)
     
     
     

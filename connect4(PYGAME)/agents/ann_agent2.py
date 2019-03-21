@@ -8,8 +8,9 @@ from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
 
-class AnnAgent:
-    def __init__(self, game, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'ann_agent_minimax2.tflearn'):
+
+class AnnAgent2:
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent2_minimax.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -29,7 +30,7 @@ class AnnAgent:
         #Flatten board array
         flattened = np.array(board).reshape(-1, 42, 1)
         return flattened
-    
+
     def add_action_to_observation(self, observation, action):
         return np.append([action], observation)
 
@@ -40,12 +41,12 @@ class AnnAgent:
 
     def train(self, reward):
         for val in self.board_states:
+            val.append(reward)
             self.training_data.append(
-               [val, reward])
+            val)
 
-        self.board_states = []        
+        self.board_states = []
         self.nn_model = self.train_model(self.training_data, self.nn_model)
-
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -58,10 +59,11 @@ class AnnAgent:
         network = input_data(shape=[None, 43, 1], name='input')
         network = fully_connected(network, 250, activation='relu')
         network = fully_connected(network, 1, activation='linear')
-        network = regression(network, optimizer='adam',learning_rate=self.lr, loss='mean_square', name='target')
+        network = regression(network, optimizer='adam',
+                             learning_rate=self.lr, loss='mean_square', name='target')
         model = tflearn.DNN(network, tensorboard_dir='log')
-        return model 
-    
+        return model
+
     def makeMove(self, board, piece):
         if piece == 1:
             otherPiece = 2
@@ -71,12 +73,11 @@ class AnnAgent:
         prev_observation = self.generate_observation(board)
         predictions = []
 
-        for action in range(0,7):
-            predictions.append(self.nn_model.predict(self.add_action_to_observation(prev_observation, action).reshape(-1,43,1)))
+        for action in range(0, 7):
+            predictions.append(self.nn_model.predict(
+                self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
             if self.game.is_valid_location(board, action) == False:
                predictions[action] = -100000
-           
-                
 
         action = np.argmax(np.array(predictions))
 
@@ -84,32 +85,39 @@ class AnnAgent:
         #temp = self.game.is_valid_location(board, action)
 
        # if(self.game.is_valid_location(board, action)):
-        #boardCopy = board.copy()
-            #row = self.game.get_next_open_row(boardCopy, action)
-            #self.game.drop_piece(boardCopy, row, action,piece)
-            #score = self.game.score_position(boardCopy,piece)
+        boardCopy = board.copy()
+        row = self.game.get_next_open_row(boardCopy, action)
+        self.game.drop_piece(boardCopy, row, action,piece)
+        score = self.game.score_position(boardCopy,piece)
 
-        ##If there was an oportunity to block the other player 
-       
-        self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-           
-        
-           
+        ##If there was an oportunity to block the other player
+        if self.game.can_win(boardCopy, otherPiece):
+            self.training_data.append(
+                [self.add_action_to_observation(prev_observation, action), -175])
+
+        ##If a winning move was blocked
+        elif self.game.can_win(board, otherPiece) == True and self.game.can_win(boardCopy, otherPiece) == False:
+            self.training_data.append(
+                [self.add_action_to_observation(prev_observation, action), +175])
+
+
+        else:
+            self.board_states.append(
+                [self.add_action_to_observation(prev_observation, action)])
+        #self.training_data.append(
+        #   [self.add_action_to_observation(prev_observation, action), 1])
         return action
        # else:
-           # boardCopy = board.copy()
-           # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-            #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
-            #self.makeMove(board, piece)
-           # action = random.randint(0, 6)
+        # boardCopy = board.copy()
+        # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
+        #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
+        #self.nn_model = self.train_model(self.training_data, self.nn_model)
+        #self.makeMove(board, piece)
+        # action = random.randint(0, 6)
 
-           # while self.game.is_valid_location(board, action) == False:
-              #  action = random.randint(0, 6)
-           # self.training_data.append(
-                    #[self.add_action_to_observation(prev_observation, action), -10000])
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
-           # return action
-
-        
-
+        # while self.game.is_valid_location(board, action) == False:
+        #  action = random.randint(0, 6)
+        # self.training_data.append(
+        #[self.add_action_to_observation(prev_observation, action), -10000])
+        #self.nn_model = self.train_model(self.training_data, self.nn_model)
+        # return action
