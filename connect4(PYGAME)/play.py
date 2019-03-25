@@ -19,7 +19,7 @@ def main():
     ROW_COUNT = 6
     COLUMN_COUNT = 7
     game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
-    env = Connect4Env(SQUARESIZE,ROW_COUNTs,COLUMN_COUNT,game)
+    env = Connect4Env(SQUARESIZE,ROW_COUNT,COLUMN_COUNT,game)
 
     #player1 = HumanAgent()
     #player1 = RandomAgent()
