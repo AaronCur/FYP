@@ -9,6 +9,7 @@ from agents.minimax_agent import MiniMaxAgent
 from agents.ann_agent import AnnAgent
 from agents.ann_agent2 import AnnAgent2
 from agents.ann_agent3 import AnnAgent3
+from agents.ann_agent4 import AnnAgent4
 import pygame
 
 
@@ -27,7 +28,7 @@ def main():
     #player1 = MiniMaxAgent(game)
     #player1 = AnnAgent(game)
     #player1 = AnnAgent2(game)
-    player1 = AnnAgent3(game)
+    player1 = AnnAgent4(game)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
@@ -36,6 +37,7 @@ def main():
     #player2 = AnnAgent(game)
     #player2 = AnnAgent2(game)
     #player2 = AnnAgent3(game)
+    #player2 = AnnAgent4(game)
     
     
     
