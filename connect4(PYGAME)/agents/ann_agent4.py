@@ -10,7 +10,7 @@ from collections import Counter
 
 
 class AnnAgent4:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent4_minimax.tflearn'):
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent4(part3)_minimax.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -98,7 +98,7 @@ class AnnAgent4:
         ##If a winning move was blocked
         if self.game.can_win(board, otherPiece) == True and self.game.can_win(boardCopy, otherPiece) == False:
             self.training_data.append(
-                [self.add_action_to_observation(prev_observation, action), +0.75])
+                [self.add_action_to_observation(prev_observation, action), +175])
 
         else:
             self.board_states.append(

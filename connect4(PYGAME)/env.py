@@ -41,6 +41,10 @@ class Connect4Env:
         self.YELLOW = (255,255,0)
 
         self.win_his =[]
+        self.player1_wins = []
+        self.player2_wins = []
+        self.draws = []
+        self.game_number = []
 
 
     ##def reset(self):
@@ -84,20 +88,22 @@ class Connect4Env:
                 for r in range(self.ROW_COUNT):
                     if board[r][c] == 1:
                         pygame.draw.circle(screen, self.RED, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
-                    elif board[r][c] == 2:
+                    elif board[r][c] == -1:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
             pygame.display.update()
 
-    def plot_history(self, history):
+    def plot_history(self):
         plt.figure()
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
-        plt.plot(np.arange(100), history,
-               label='Win Rate')
+        plt.plot(self.game_number, self.player1_wins, 'g-', label='Player1')
+        plt.plot(self.game_number,self.player2_wins,'r-', label='Player2')
     
         plt.legend()
         plt.ylim([0,100])
         plt.show()
+
+  
         
     def win_percentage(self,wins, games):
         percentage = 100 * float(wins) / float(games)
@@ -105,10 +111,13 @@ class Connect4Env:
         return percentage
 
     def play(self,player1, player2):
-        gameNumber = 0;
+        gameNumber = 0
         for i in range(100):
-
+            player1wins = 0
+            player2wins = 0
+            draws = 0
             for i in range(10):
+                
                 gameNumber+=1
                 
                 self.screen = pygame.display.set_mode(self.size)
@@ -189,11 +198,13 @@ class Connect4Env:
                                     label = myfont.render(str(tag) +" wins!!", 1, self.RED)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
+                                    player1wins = player1wins + 1
                                     if(player2.getTag() == "Ann"):
                                         player2.train(-1)
                                     elif (player1.getTag() == "Ann"):
                                         player1.train(1)
                                         player1.wins = player1.wins + 1
+                                        
 
                                 self.print_board(self.board)
                                 self.draw_board(self.board, self.screen, pygame)
@@ -260,9 +271,11 @@ class Connect4Env:
                                     label = myfont.render(str(tag)+" wins!!", 1, self.YELLOW)
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
+                                    player2wins = player2wins + 1
                                     if(player2.getTag() == "Ann"):
                                         player2.train(1)
                                         player2.wins = player2.wins + 1
+                                        
                                     elif (player1.getTag() == "Ann"):
                                         player1.train(-1)
 
@@ -272,8 +285,10 @@ class Connect4Env:
                                 self.turn += 1
                                 self.turn = self.turn % 2
                     #if self.game_over:
-                       # pygame.time.wait(3000)
+                    # pygame.time.wait(3000)
             self.win_percentage(player1.wins, 10)
-            player1.wins = 0;
+            self.player1_wins.append(player1wins)
+            self.player2_wins.append(player2wins)
+            self.game_number.append(gameNumber)
 
-        self.plot_history(self.win_his)
+        self.plot_history()
