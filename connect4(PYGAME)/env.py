@@ -105,10 +105,13 @@ class Connect4Env:
         return percentage
 
     def play(self,player1, player2):
-        
-        for i in range(10):
+        gameNumber = 0;
+        for i in range(100):
 
             for i in range(10):
+                gameNumber+=1
+                numGames = myfont.render("Game: " +str(gameNumber) , 1, self.RED)
+                self.screen.blit(numGames, (40, 10))
                 self.screen = pygame.display.set_mode(self.size)
                 myfont = pygame.font.SysFont("monospace", 75)
                 self.game_over = False
