@@ -33,7 +33,7 @@ class Connect4Env:
 
         self.EMPTY = 0
         self.PLAYER1_PIECE = 1
-        self.PLAYER2_PIECE = 2
+        self.PLAYER2_PIECE = -1
 
         self.BG = (0,0,0)
         self.BOARD = (0,0,255)
@@ -110,14 +110,17 @@ class Connect4Env:
 
             for i in range(10):
                 gameNumber+=1
-                numGames = myfont.render("Game: " +str(gameNumber) , 1, self.RED)
-                self.screen.blit(numGames, (40, 10))
+                
                 self.screen = pygame.display.set_mode(self.size)
                 myfont = pygame.font.SysFont("monospace", 75)
                 self.game_over = False
             
                 self.board = self.game.create_board()
                 print("episode "+ str(i))
+
+                numGames = myfont.render(
+                    "Game: " + str(gameNumber), 1, self.RED)
+                self.screen.blit(numGames, (40, 10))
 
                 self.draw_board(self.board, self.screen, pygame)
                 pygame.display.update()
@@ -187,9 +190,9 @@ class Connect4Env:
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
                                     if(player2.getTag() == "Ann"):
-                                        player2.train(-100)
+                                        player2.train(-1)
                                     elif (player1.getTag() == "Ann"):
-                                        player1.train(100)
+                                        player1.train(1)
                                         player1.wins = player1.wins + 1
 
                                 self.print_board(self.board)
@@ -226,7 +229,7 @@ class Connect4Env:
                                         self.game_over = True
                                         
                                         if (player1.getTag() == "Ann"):
-                                            player1.train(-100)
+                                            player1.train(-1)
 
                                     self.turn += 1
                                     self.turn = self.turn % 2
@@ -258,10 +261,10 @@ class Connect4Env:
                                     self.screen.blit(label, (40,10))
                                     self.game_over = True
                                     if(player2.getTag() == "Ann"):
-                                        player2.train(100)
+                                        player2.train(1)
                                         player2.wins = player2.wins + 1
                                     elif (player1.getTag() == "Ann"):
-                                        player1.train(-100)
+                                        player1.train(-1)
 
                                 self.print_board(self.board)
                                 self.draw_board(self.board, self.screen, pygame)
