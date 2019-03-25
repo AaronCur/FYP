@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 
-class AnnAgent2:
+class AnnAgent3:
     def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent3_minimax.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
