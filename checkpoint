@@ -1,2 +1,2 @@
-model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\ann_agent5_minimax.tflearn"
-all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\ann_agent5_minimax.tflearn"
+model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\ann_agent5_minimax(going first).tflearn"
+all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\ann_agent5_minimax(going first).tflearn"

@@ -99,7 +99,7 @@ class Connect4Env:
 
     def plot_history(self):
         plt.figure()
-        plt.title('ANNv4 vs MiniMax')
+        plt.title('ANNeGreedy vs MiniMax (going second)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         plt.plot(self.game_number, self.player1_wins, 'g-', label='Player1')
@@ -109,8 +109,6 @@ class Connect4Env:
   
         plt.show()
 
-  
-        
     def win_percentage(self,wins, games):
         percentage = 100 * float(wins) / float(games)
         self.win_his.append(percentage)
@@ -125,6 +123,7 @@ class Connect4Env:
             draws = 0
             for i in range(self.games):
 
+                self.startTurn = 0
                 self.turn = self.startTurn
                 
                 gameNumber+=1
