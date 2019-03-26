@@ -12,7 +12,7 @@ class Connect4Board:
             self.PLAYER1 = 0
             self.PLAYER2 = 1
             self.PLAYER1_PIECE = 1
-            self.PLAYER2_PIECE = 2
+            self.PLAYER2_PIECE = -1
             self.EMPTY = 0
             self.WINDOW_LENGTH = 4
             
@@ -60,37 +60,56 @@ class Connect4Board:
                         return True
 
         def can_win(self, board, piece):
+            winning_moves =[]
             # Check horizontal locations for winable move
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(self.ROW_COUNT):
                     if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == self.EMPTY:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == piece:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
 
             # Check vertical locations for winable move
             for c in range(self.COLUMN_COUNT):
                 for r in range(self.ROW_COUNT-3):
                     if board[r][c] == piece and board[r+1][c] == piece and board[r+2][c] == piece and board[r+3][c] == self.EMPTY:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r+1][c] == piece and board[r+2][c] == piece and board[r+3][c] == piece:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
 
             # Check positively sloped diaganols for winable move
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(self.ROW_COUNT-3):
                     if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == self.EMPTY:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
 
             # Check negatively sloped diaganols for winable move
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(3, self.ROW_COUNT):
                     if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == self.EMPTY:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
-                        return True
+                        winning_moves.append(1)
+                    else:
+                        winning_moves.append(0)
+                        
+            return winning_moves
 
         def get_valid_locations(self, board):
             valid_locations = []

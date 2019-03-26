@@ -36,17 +36,17 @@ class AnnAgent2:
 
     def init_model(self):
         nn_model = self.model()
-        #nn_model.load(self.filename)
+        nn_model.load(self.filename)
         return nn_model
 
     def train(self, reward):
-        for val in self.board_states:
-            val.append(reward)
-            self.training_data.append(
-            val)
+        #for val in self.board_states:
+           # val.append(reward)
+            #self.training_data.append(
+           # val)
 
         self.board_states = []
-        self.nn_model = self.train_model(self.training_data, self.nn_model)
+        #self.nn_model = self.train_model(self.training_data, self.nn_model)
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -90,13 +90,16 @@ class AnnAgent2:
         self.game.drop_piece(boardCopy, row, action,piece)
         score = self.game.score_position(boardCopy,piece)
 
+        boardwins = self.game.can_win(board, otherPiece)
+        otherboardwins = self.game.can_win(boardCopy, otherPiece)
         ##If there was an oportunity to block the other player
-        if self.game.can_win(boardCopy, otherPiece):
+        if 1 in otherboardwins:
             self.training_data.append(
                 [self.add_action_to_observation(prev_observation, action), -175])
+       
 
         ##If a winning move was blocked
-        elif self.game.can_win(board, otherPiece) == True and self.game.can_win(boardCopy, otherPiece) == False:
+        elif boardwins != otherboardwins:
             self.training_data.append(
                 [self.add_action_to_observation(prev_observation, action), +175])
 

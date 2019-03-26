@@ -33,7 +33,7 @@ class Connect4Env:
 
         self.EMPTY = 0
         self.PLAYER1_PIECE = 1
-        self.PLAYER2_PIECE = -1
+        self.PLAYER2_PIECE = 2
 
         self.BG = (0,0,0)
         self.BOARD = (0,0,255)
@@ -41,15 +41,16 @@ class Connect4Env:
         self.YELLOW = (255,255,0)
 
         self.win_his =[]
-        self.player1_wins = [0,0,0,0,0]
-        self.player2_wins = [80,90,90,90,100]
+        self.player1_wins = []
+        self.player2_wins = []
         self.draws = []
-        self.game_number = [10,20,30,40,50]
+        self.game_number = []
 
         self.games = 10
-        self.battles = 5
+        self.battles = 100
 
-        self.plot_history()
+        self.gui = False
+        self.startTurn = 0;
 
     ##def reset(self):
         ##self.board = TicTacToeBoard()
@@ -92,12 +93,13 @@ class Connect4Env:
                 for r in range(self.ROW_COUNT):
                     if board[r][c] == 1:
                         pygame.draw.circle(screen, self.RED, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
-                    elif board[r][c] == -1:
+                    elif board[r][c] == 2:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
             pygame.display.update()
 
     def plot_history(self):
         plt.figure()
+        plt.title('ANNv4 vs MiniMax')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         plt.plot(self.game_number, self.player1_wins, 'g-', label='Player1')
@@ -122,6 +124,8 @@ class Connect4Env:
             player2wins = 0
             draws = 0
             for i in range(self.games):
+
+                self.turn = self.startTurn
                 
                 gameNumber+=1
                 
@@ -195,27 +199,33 @@ class Connect4Env:
                             #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
 
                             if self.game.is_valid_location(self.board, col):
-                                pygame.time.wait(250)
                                 row = self.game.get_next_open_row(self.board, col)
                                 self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
-
-                                if self.game.winning_move(self.board, self.PLAYER1_PIECE):
-                                    label = myfont.render(str(tag) +" wins!!", 1, self.RED)
-                                    self.screen.blit(label, (40,10))
-                                    self.game_over = True
-                                    player1wins = player1wins + 1
-                                    if(player2.getTag() == "Ann"):
-                                        player2.train(-1)
-                                    elif (player1.getTag() == "Ann"):
-                                        player1.train(1)
-                                        player1.wins = player1.wins + 1
-                                        
 
                                 self.print_board(self.board)
                                 self.draw_board(self.board, self.screen, pygame)
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
+                                #pygame.time.wait(250)
+
+                                if self.game.winning_move(self.board, self.PLAYER1_PIECE):
+                                    label = myfont.render(
+                                        str(tag) + " wins!!", 1, self.RED)
+                                    self.screen.blit(label, (40, 10))
+                                    self.game_over = True
+                                    player1wins = player1wins + 1
+                                    if(player2.getTag() == "Ann"):
+                                        player2.train(-100)
+                                    elif (player1.getTag() == "Ann"):
+                                        player1.train(100)
+                                        player1.wins = player1.wins + 1
+                                    
+                                    if self.startTurn == 0:
+                                        self.startTurn = 1
+                                    else:
+                                        self.startTurn = 0
+                                        
 
 
                     # # Ask for Player 2 Input
@@ -245,7 +255,7 @@ class Connect4Env:
                                         self.game_over = True
                                         
                                         if (player1.getTag() == "Ann"):
-                                            player1.train(-1)
+                                            player1.train(-100)
 
                                     self.turn += 1
                                     self.turn = self.turn % 2
@@ -268,27 +278,37 @@ class Connect4Env:
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
                             if self.game.is_valid_location(self.board, col):
-                                pygame.time.wait(250)
                                 row = self.game.get_next_open_row(self.board, col)
                                 self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
 
-                                if self.game.winning_move(self.board, self.PLAYER2_PIECE):
-                                    label = myfont.render(str(tag)+" wins!!", 1, self.YELLOW)
-                                    self.screen.blit(label, (40,10))
-                                    self.game_over = True
-                                    player2wins = player2wins + 1
-                                    if(player2.getTag() == "Ann"):
-                                        player2.train(1)
-                                        player2.wins = player2.wins + 1
-                                        
-                                    elif (player1.getTag() == "Ann"):
-                                        player1.train(-1)
-
+                               
                                 self.print_board(self.board)
+                            
                                 self.draw_board(self.board, self.screen, pygame)
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
+                                #pygame.time.wait(250)
+
+                                if self.game.winning_move(self.board, self.PLAYER2_PIECE):
+
+                                    label = myfont.render(
+                                        str(tag)+" wins!!", 1, self.YELLOW)
+                                    self.screen.blit(label, (40, 10))
+                                    self.game_over = True
+                                    player2wins = player2wins + 1
+                                    if(player2.getTag() == "Ann"):
+                                        player2.train(100)
+                                        player2.wins = player2.wins + 1
+
+                                    elif (player1.getTag() == "Ann"):
+                                        player1.train(-100)
+
+                                    if self.startTurn == 0:
+                                        self.startTurn = 1
+                                    else:
+                                        self.startTurn = 0
+
                     #if self.game_over:
                     # pygame.time.wait(3000)
             percentage = self.win_percentage(player1wins,self.games )

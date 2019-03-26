@@ -10,7 +10,7 @@ from collections import Counter
 
 
 class AnnAgent4:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent4(part3)_minimax.tflearn'):
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent4(part4)_minimax.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -22,6 +22,7 @@ class AnnAgent4:
         self.training_data = []
         self.board_states = []
         self.wins = 0
+        self.gui = False
 
     def getTag(self):
         return self.tag
