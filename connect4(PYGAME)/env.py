@@ -43,7 +43,7 @@ class Connect4Env:
         self.win_his =[]
         self.player1_wins = []
         self.player2_wins = []
-        self.draws = []
+        self.drawn_games = []
         self.game_number = []
 
         self.games = 10
@@ -99,11 +99,12 @@ class Connect4Env:
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('ANNeGreedy vs MiniMax (going second)')
+        plt.title('ANNeGreedy vs Random (going first)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
         plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag())
+        plt.plot(self.game_number,self.drawn_games,'b-', label="Draws")
     
         plt.legend()
   
@@ -307,13 +308,18 @@ class Connect4Env:
                                         self.startTurn = 1
                                     else:
                                         self.startTurn = 0
-
+                    #No empty spaces which means game is drawn
+                    if 0 not in self.board:
+                        self.game_over = True
+                        draws = draws + 1
                     #if self.game_over:
                     # pygame.time.wait(3000)
             percentage = self.win_percentage(player1wins,self.games )
             self.player1_wins.append(percentage)
             percentage = self.win_percentage(player2wins, self.games)
             self.player2_wins.append(percentage)
+            percentage = self.win_percentage(draws, self.games)
+            self.drawn_games.append(percentage)
             self.game_number.append(gameNumber)
 
         self.plot_history(player1, player2)

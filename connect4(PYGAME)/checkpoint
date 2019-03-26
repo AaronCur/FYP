@@ -1,0 +1,2 @@
+model_checkpoint_path: "C:\\College\\Year4\\FYP\\connect4(PYGAME)\\ann_agent5_random(going first).tflearn"
+all_model_checkpoint_paths: "C:\\College\\Year4\\FYP\\connect4(PYGAME)\\ann_agent5_random(going first).tflearn"
