@@ -41,11 +41,15 @@ class Connect4Env:
         self.YELLOW = (255,255,0)
 
         self.win_his =[]
-        self.player1_wins = []
-        self.player2_wins = []
+        self.player1_wins = [0,0,0,0,0]
+        self.player2_wins = [80,90,90,90,100]
         self.draws = []
-        self.game_number = []
+        self.game_number = [10,20,30,40,50]
 
+        self.games = 10
+        self.battles = 5
+
+        self.plot_history()
 
     ##def reset(self):
         ##self.board = TicTacToeBoard()
@@ -100,7 +104,7 @@ class Connect4Env:
         plt.plot(self.game_number,self.player2_wins,'r-', label='Player2')
     
         plt.legend()
-        plt.ylim([0,100])
+  
         plt.show()
 
   
@@ -112,11 +116,12 @@ class Connect4Env:
 
     def play(self,player1, player2):
         gameNumber = 0
-        for i in range(100):
+       
+        for i in range(self.battles):
             player1wins = 0
             player2wins = 0
             draws = 0
-            for i in range(10):
+            for i in range(self.games):
                 
                 gameNumber+=1
                 
@@ -286,9 +291,10 @@ class Connect4Env:
                                 self.turn = self.turn % 2
                     #if self.game_over:
                     # pygame.time.wait(3000)
-            self.win_percentage(player1.wins, 10)
-            self.player1_wins.append(player1wins)
-            self.player2_wins.append(player2wins)
+            percentage = self.win_percentage(player1wins,self.games )
+            self.player1_wins.append(percentage)
+            percentage = self.win_percentage(player2wins, self.games)
+            self.player2_wins.append(percentage)
             self.game_number.append(gameNumber)
 
         self.plot_history()
