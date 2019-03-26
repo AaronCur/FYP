@@ -97,13 +97,13 @@ class Connect4Env:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
             pygame.display.update()
 
-    def plot_history(self):
+    def plot_history(self, player1, player2):
         plt.figure()
         plt.title('ANNeGreedy vs MiniMax (going second)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
-        plt.plot(self.game_number, self.player1_wins, 'g-', label='Player1')
-        plt.plot(self.game_number,self.player2_wins,'r-', label='Player2')
+        plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
+        plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag())
     
         plt.legend()
   
@@ -316,4 +316,4 @@ class Connect4Env:
             self.player2_wins.append(percentage)
             self.game_number.append(gameNumber)
 
-        self.plot_history()
+        self.plot_history(player1, player2)
