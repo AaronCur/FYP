@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent5:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_random(going second).tflearn'):
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_minimax_22(going first).tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -61,7 +61,8 @@ class AnnAgent5:
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
-        network = fully_connected(network, 250, activation='relu')
+       # network = fully_connected(network, 250, activation='relu')
+        network = fully_connected(network, 22, activation='relu')
         network = fully_connected(network, 1, activation='linear')
         network = regression(network, optimizer='adam',
                              learning_rate=self.lr, loss='mean_square', name='target')
