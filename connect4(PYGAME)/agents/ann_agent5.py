@@ -38,19 +38,20 @@ class AnnAgent5:
 
     def init_model(self):
         nn_model = self.model()
-        #nn_model.load(self.filename)
+        nn_model.load(self.filename)
         return nn_model
 
     def train(self, reward):
-        for val in self.board_states:
-            val.append(reward)
-            self.training_data.append(
-            val)
+       ## for val in self.board_states:
+          ##  val.append(reward)
+            ##self.training_data.append(
+           ## val)
 
-        self.board_states = []
+        ##self.board_states = []
         ##Decrease greedy value
-        self.random_move_prob *= self.random_move_decrease
-        self.nn_model = self.train_model(self.training_data, self.nn_model)
+        ##self.random_move_prob *= self.random_move_decrease
+        ##self.nn_model = self.train_model(self.training_data, self.nn_model)
+        pass
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -79,18 +80,18 @@ class AnnAgent5:
 
         randnumber = np.random.rand(1)
         ##greedy element
-        if(randnumber < self.random_move_prob):
-            action = random.randint(0, 6)
+        #if(randnumber < self.random_move_prob):
+         #   action = random.randint(0, 6)
 
-            while self.game.is_valid_location(board, action) == False:
-                action = random.randint(0, 6)
-        else:
+          #  while self.game.is_valid_location(board, action) == False:
+           #     action = random.randint(0, 6)
+       # else:
 
-            for action in range(0, 7):
-                predictions.append(self.nn_model.predict(
-                    self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
-                if self.game.is_valid_location(board, action) == False:
-                    predictions[action] = -100000
+        for action in range(0, 7):
+            predictions.append(self.nn_model.predict(
+                self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
+            if self.game.is_valid_location(board, action) == False:
+                predictions[action] = -100000
 
             action = np.argmax(np.array(predictions))
 

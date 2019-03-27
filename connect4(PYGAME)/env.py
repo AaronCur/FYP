@@ -96,15 +96,28 @@ class Connect4Env:
                     elif board[r][c] == 2:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
             pygame.display.update()
+    def calc_avg(self, wins):
+        return sum(wins) / len(wins) 
+
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('ANNeGreedy vs Random (going first)')
+        plt.title('Trained ANNeGreedy 250 hidden nodes vs Random (going first)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
-        plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
-        plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag())
-        plt.plot(self.game_number,self.drawn_games,'b-', label="Draws")
+        drawsAvg = self.calc_avg(self.drawn_games)
+        if len(self.drawn_games) != 0:
+            plt.plot(self.game_number,self.drawn_games,'b-', label="Draws" + ": " + str(drawsAvg) + "%" )
+        player1Avg = self.calc_avg(self.player1_wins)
+        player2Avg = self.calc_avg(self.player2_wins)
+        
+        if player1.getTag() == "Ann":
+            plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
+            plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+        else:
+            plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
+            plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+       
     
         plt.legend()
   
@@ -192,7 +205,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player1.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                                col, minimax_score = player1.makeMove(self.board, 3, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                             elif tag == "Ann":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
@@ -273,7 +286,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player2.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                                col, minimax_score = player2.makeMove(self.board, 3, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
