@@ -102,11 +102,10 @@ class Connect4Env:
         plt.title('ANNeGreedy 22 hidden neurons vs MiniMax (going first)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
+        plt.plot(self.game_number, self.drawn_games, 'b-', label="Draws")
         plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
         plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag())
-        if len(self.drawn_games) != 0:
-            plt.plot(self.game_number,self.drawn_games,'b-', label="Draws")
-    
+        
         plt.legend()
   
         plt.show()
