@@ -99,7 +99,7 @@ class Connect4Env:
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('ANNeGreedy vs Random (going first)')
+        plt.title('ANNeGreedy vs Random (going second)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
@@ -124,7 +124,7 @@ class Connect4Env:
             draws = 0
             for i in range(self.games):
 
-                self.startTurn = 0
+                self.startTurn = 1
                 self.turn = self.startTurn
                 
                 gameNumber+=1
