@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent5:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_minimax_22(going second).tflearn'):
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_minimax_22_2(going first).tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -22,7 +22,7 @@ class AnnAgent5:
         self.training_data = []
         self.board_states = []
         self.wins = 0
-        self.random_move_decrease = 0.995
+        self.random_move_decrease = 0.996
         self.random_move_prob = 1
 
     def getTag(self):
@@ -51,6 +51,7 @@ class AnnAgent5:
         ##Decrease greedy value
         self.random_move_prob *= self.random_move_decrease
         self.nn_model = self.train_model(self.training_data, self.nn_model)
+       
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)

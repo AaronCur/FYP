@@ -96,16 +96,29 @@ class Connect4Env:
                     elif board[r][c] == 2:
                         pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
             pygame.display.update()
+    def calc_avg(self, wins):
+        return sum(wins) / len(wins) 
+
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('ANNeGreedy 22 hidden neurons vs MiniMax (going first)')
+        plt.title('ANNeGreedy 22 hidden nodes vs Minimax (going first)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
-        plt.plot(self.game_number, self.drawn_games, 'b-', label="Draws")
-        plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag())
-        plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag())
+        drawsAvg = self.calc_avg(self.drawn_games)
+        if len(self.drawn_games) != 0:
+            plt.plot(self.game_number,self.drawn_games,'b-', label="Draws" + ": " + str(drawsAvg) + "%" )
+        player1Avg = self.calc_avg(self.player1_wins)
+        player2Avg = self.calc_avg(self.player2_wins)
         
+        if player1.getTag() == "Ann":
+            plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
+            plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+        else:
+            plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
+            plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+       
+    
         plt.legend()
   
         plt.show()
