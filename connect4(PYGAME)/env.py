@@ -102,7 +102,7 @@ class Connect4Env:
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('Trained ANNeGreedy 250 hidden nodes vs Random (going first)')
+        plt.title('ANNeGreedy 22 hidden nodes vs Minimax (going first)')
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         drawsAvg = self.calc_avg(self.drawn_games)
@@ -205,7 +205,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player1.makeMove(self.board, 3, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                                col, minimax_score = player1.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                             elif tag == "Ann":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
@@ -286,7 +286,7 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player2.makeMove(self.board, 3, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                                col, minimax_score = player2.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
