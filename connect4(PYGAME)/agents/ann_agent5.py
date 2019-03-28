@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent5:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_minimax_22(going first).tflearn'):
+    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent5_minimax_22_2(going first).tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -22,7 +22,7 @@ class AnnAgent5:
         self.training_data = []
         self.board_states = []
         self.wins = 0
-        self.random_move_decrease = 0.995
+        self.random_move_decrease = 0.996
         self.random_move_prob = 1
 
     def getTag(self):
