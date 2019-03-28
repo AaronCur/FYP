@@ -10,7 +10,8 @@ from agents.ann_agent import AnnAgent
 from agents.ann_agent2 import AnnAgent2
 from agents.ann_agent3 import AnnAgent3
 from agents.ann_agent4 import AnnAgent4
-from agents.ann_agent5 import AnnAgent5
+from agents.ann_agent_250_greedy import AnnAgent250greedy
+from agents.ann_agent_22_greedy import AnnAgent22greedy
 import pygame
 
 
@@ -30,7 +31,9 @@ def main():
     #player1 = AnnAgent(game)
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
-    player1 = AnnAgent5(game)
+    Training = False
+    #player1 = AnnAgent22greedy(game, Training)
+    player1 = AnnAgent250greedy(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()

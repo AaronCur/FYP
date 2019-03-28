@@ -50,7 +50,7 @@ class Connect4Env:
         self.battles = 100
 
         self.gui = False
-        self.startTurn = 0;
+        self.startTurn = 0
 
     ##def reset(self):
         ##self.board = TicTacToeBoard()
@@ -102,7 +102,7 @@ class Connect4Env:
 
     def plot_history(self, player1, player2):
         plt.figure()
-        plt.title('ANNeGreedy 22 hidden nodes vs Minimax (going first)')
+        
         plt.xlabel('Games Played')
         plt.ylabel('Winning Rate %')
         drawsAvg = self.calc_avg(self.drawn_games)
@@ -114,10 +114,17 @@ class Connect4Env:
         if player1.getTag() == "Ann":
             plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
             plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+            if player1.training == False:
+                plt.title('Trained ANNeGreedy '+ str(player1.hidden_nodes)+' hidden nodes vs ' + str(player2.tag))
+            else:
+                plt.title('Training ANNeGreedy '+ str(player1.hidden_nodes)+' hidden nodes vs ' + str(player2.tag))
         else:
             plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
             plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
-       
+            if player1.training == False:
+                plt.title('Trained ANNeGreedy '+ str(player2.hidden_nodes)+' hidden nodes vs ' + str(player1.tag))
+            else:
+                plt.title('Training ANNeGreedy '+ str(player2.hidden_nodes)+' hidden nodes vs ' + str(player1.tag))
     
         plt.legend()
   
