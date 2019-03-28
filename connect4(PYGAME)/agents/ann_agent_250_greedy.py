@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent250greedy:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_250(going first).tflearn'):
+    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/250/ann_agent5_minimax_250(going first).tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -18,14 +18,16 @@ class AnnAgent250greedy:
         self.filename = filename
         self.tag = "Ann"
         self.game = game
-        self.nn_model = self.init_model()
         self.training_data = []
         self.board_states = []
         self.wins = 0
         self.random_move_decrease = 0.996
         self.random_move_prob = 1
-        self.training = training
         self.hidden_nodes = 250
+        self.training = training
+
+        self.nn_model = self.init_model()
+        
 
     def getTag(self):
         return self.tag
@@ -70,13 +72,13 @@ class AnnAgent250greedy:
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
-        network = fully_connected(network, self.hidden_nodes, activation='relu')
+        network = fully_connected(network, self.hidden_nodes , activation='relu')
         network = fully_connected(network, 1, activation='linear')
         network = regression(network, optimizer='adam',
                              learning_rate=self.lr, loss='mean_square', name='target')
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model
-
+ 
     def makeMove(self, board, piece):
         if piece == 1:
             otherPiece = 2

@@ -18,7 +18,7 @@ class AnnAgent22greedy:
         self.filename = filename
         self.tag = "Ann"
         self.game = game
-        self.nn_model = self.init_model()
+        
         self.training_data = []
         self.board_states = []
         self.wins = 0
@@ -26,6 +26,8 @@ class AnnAgent22greedy:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
+
+        self.nn_model = self.init_model()
 
     def getTag(self):
         return self.tag
