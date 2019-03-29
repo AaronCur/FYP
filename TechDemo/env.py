@@ -115,16 +115,16 @@ class Connect4Env:
             plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
             plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
             if player1.training == False:
-                plt.title('Trained ANNeGreedy '+ str(player1.hidden_nodes)+' hidden nodes vs ' + str(player2.tag))
+                plt.title('Trained '+ str(player1.description)+' hidden nodes vs ' + str(player2.tag))
             else:
-                plt.title('Training ANNeGreedy '+ str(player1.hidden_nodes)+' hidden nodes vs ' + str(player2.tag))
+                plt.title('Training '+ str(player1.description)+' vs ' + str(player2.tag))
         else:
             plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
             plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
             if player1.training == False:
-                plt.title('Trained ANNeGreedy '+ str(player2.hidden_nodes)+' hidden nodes vs ' + str(player1.tag))
+                plt.title('Trained '+ str(player2.description)+' vs ' + str(player1.tag))
             else:
-                plt.title('Training ANNeGreedy '+ str(player2.hidden_nodes)+' hidden nodes vs ' + str(player1.tag))
+                plt.title('Training '+ str(player2.description)+' vs ' + str(player1.tag))
     
         plt.legend()
   

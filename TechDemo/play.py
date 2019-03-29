@@ -12,6 +12,8 @@ from agents.ann_agent3 import AnnAgent3
 from agents.ann_agent4 import AnnAgent4
 from agents.ann_agent_250_greedy import AnnAgent250greedy
 from agents.ann_agent_22_greedy import AnnAgent22greedy
+from agents.ann_agent_basic import AnnAgentBasic
+from agents.ann_agent_more_rewards import AnnAgentMoreRewards
 import pygame
 
 
@@ -31,14 +33,17 @@ def main():
     #player1 = AnnAgent(game)
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
-    Training = False
-    player1 = AnnAgent22greedy(game, Training)
+
+    Training = True
+    #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
+    player1 = AnnAgentBasic(game, Training)
+    #player1 = AnnAgentMoreRewards(game, Training)
 
     #player2 = HumanAgent()
-    player2 = RandomAgent()
+    #player2 = RandomAgent()
     #player2 = BestMoveAgent()
-    #player2 = MiniMaxAgent(game)
+    player2 = MiniMaxAgent(game)
     #player2 = AnnAgent(game)
     #player2 = AnnAgent2(game)
     #player2 = AnnAgent3(game)

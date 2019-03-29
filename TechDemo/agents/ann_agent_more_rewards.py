@@ -9,8 +9,9 @@ from statistics import mean
 from collections import Counter
 #EGREEDY
 
-class AnnAgent22greedy:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_2(going first).tflearn'):
+
+class AnnAgentMoreRewards:
+    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/250/ann_agent_more_rewards_minimax_250.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -18,16 +19,14 @@ class AnnAgent22greedy:
         self.filename = filename
         self.tag = "Ann"
         self.game = game
-        
         self.training_data = []
         self.board_states = []
         self.wins = 0
         self.random_move_decrease = 0.996
         self.random_move_prob = 1
+        self.hidden_nodes = 250
         self.training = training
-        self.hidden_nodes = 22
-        self.description = "ANNeGreedy 22 hidden nodes"
-
+        self.description = "ANN more rewards 250 hidden nodes"
         self.nn_model = self.init_model()
 
     def getTag(self):
@@ -54,15 +53,12 @@ class AnnAgent22greedy:
             for val in self.board_states:
                 val.append(reward)
                 self.training_data.append(
-                val)
+                    val)
 
             self.board_states = []
-            ##Decrease greedy value
-            self.random_move_prob *= self.random_move_decrease
             self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
-       
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -73,7 +69,8 @@ class AnnAgent22greedy:
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
-        network = fully_connected(network, self.hidden_nodes, activation='relu')
+        network = fully_connected(
+            network, self.hidden_nodes, activation='relu')
         network = fully_connected(network, 1, activation='linear')
         network = regression(network, optimizer='adam',
                              learning_rate=self.lr, loss='mean_square', name='target')
@@ -89,32 +86,20 @@ class AnnAgent22greedy:
         prev_observation = self.generate_observation(board)
         predictions = []
 
-        randnumber = np.random.rand(1)
-        ##greedy element
-        if(randnumber < self.random_move_prob and self.training == True):
-            action = random.randint(0, 6)
+      
+        for action in range(0, 7):
+            predictions.append(self.nn_model.predict(
+                self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
+            if self.game.is_valid_location(board, action) == False:
+                predictions[action] = -100000
 
-            while self.game.is_valid_location(board, action) == False:
-                action = random.randint(0, 6)
-        else:
+        action = np.argmax(np.array(predictions))
 
-            for action in range(0, 7):
-                predictions.append(self.nn_model.predict(
-                    self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
-                if self.game.is_valid_location(board, action) == False:
-                    predictions[action] = -100000
-
-            action = np.argmax(np.array(predictions))
-
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
+    
         if self.training == True:
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)
             self.game.drop_piece(boardCopy, row, action, piece)
-            score = self.game.score_position(boardCopy, piece)
 
             boardwins = self.game.can_win(board, otherPiece)
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
@@ -131,20 +116,6 @@ class AnnAgent22greedy:
             else:
                 self.board_states.append(
                     [self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append(
-        #   [self.add_action_to_observation(prev_observation, action), 1])
+ 
         return action
-       # else:
-        # boardCopy = board.copy()
-        # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        #self.makeMove(board, piece)
-        # action = random.randint(0, 6)
-
-        # while self.game.is_valid_location(board, action) == False:
-        #  action = random.randint(0, 6)
-        # self.training_data.append(
-        #[self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        # return action
+      
