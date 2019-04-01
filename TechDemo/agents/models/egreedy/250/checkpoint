@@ -1,2 +1,2 @@
-model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\250\\ann_agent_basic_minimax_250.tflearn"
-all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\250\\ann_agent_basic_minimax_250.tflearn"
+model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\250\\ann_agent_more_rewards_minimax_250.tflearn"
+all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\250\\ann_agent_more_rewards_minimax_250.tflearn"

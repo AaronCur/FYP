@@ -37,8 +37,8 @@ def main():
     Training = True
     #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
-    player1 = AnnAgentBasic(game, Training)
-    #player1 = AnnAgentMoreRewards(game, Training)
+    #player1 = AnnAgentBasic(game, Training)
+    player1 = AnnAgentMoreRewards(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
