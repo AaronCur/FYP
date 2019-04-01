@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent22greedy:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=2e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_2_2.tflearn'):
+    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=2e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_2_level2.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps

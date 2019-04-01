@@ -212,7 +212,13 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player1.makeMove(self.board, self.PLAYER1_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player1.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                                depth = 2
+                                col, minimax_score = player1.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                            elif tag == "MiniMax level 2":
+                                depth = 3
+                                col, minimax_score = player1.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                             elif tag == "Ann":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
@@ -293,7 +299,13 @@ class Connect4Env:
                             elif tag == "BestMove":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE, self.game)
                             elif tag == "MiniMax":
-                                col, minimax_score = player2.makeMove(self.board, 2, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                                depth = 2
+                                col, minimax_score = player2.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                            elif tag == "MiniMax level 2":
+                                depth = 3
+                                col, minimax_score = player2.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
