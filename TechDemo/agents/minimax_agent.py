@@ -48,7 +48,7 @@ class MiniMaxAgent():
                 row = self.game.get_next_open_row(board, col)
                 b_copy = board.copy()
                 self.game.drop_piece(b_copy, row, col, OTHERPIECE)
-                new_score = self.makeMove(b_copy, self-1, alpha, beta, True, PIECE)[1]
+                new_score = self.makeMove(b_copy, depth-1, alpha, beta, True, PIECE)[1]
                 if new_score < value:
                     value = new_score
                     column = col
