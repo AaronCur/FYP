@@ -311,7 +311,7 @@ class Connect4Env:
                                 col, minimax_score = player2.makeMove(
                                     self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "rnd MiniMax":
-                                depth = 2
+                                depth = 3
                                 col, minimax_score = player2.makeMove(
                                     self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
