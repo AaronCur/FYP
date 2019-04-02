@@ -219,6 +219,10 @@ class Connect4Env:
                                 depth = 3
                                 col, minimax_score = player1.makeMove(
                                     self.board, depth, -math.inf, math.inf, True, self.PLAYER1_PIECE)
+                            elif tag == "rnd MiniMax":
+                                depth = 3
+                                col, minimax_score = player1.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER1_PIECE)
                             elif tag == "Ann":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
@@ -306,6 +310,10 @@ class Connect4Env:
                                 depth = 3
                                 col, minimax_score = player2.makeMove(
                                     self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
+                            elif tag == "rnd MiniMax":
+                                depth = 3
+                                col, minimax_score = player2.makeMove(
+                                    self.board, depth, -math.inf, math.inf, True, self.PLAYER2_PIECE)
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
@@ -355,3 +363,6 @@ class Connect4Env:
             self.game_number.append(gameNumber)
 
         self.plot_history(player1, player2)
+        if player1.description == "ANNeGreedy trained with random moves":
+            player1.train_model()
+
