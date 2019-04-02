@@ -10,7 +10,7 @@ from collections import Counter
 #EGREEDY
 
 class AnnAgent22greedy:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=2e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_2_0.99.tflearn'):
+    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=2e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_2_0.996.tflearn'):
         self.initial_games = initial_games
         self.test_games = test_games
         self.goal_steps = goal_steps
@@ -22,7 +22,7 @@ class AnnAgent22greedy:
         self.training_data = []
         self.board_states = []
         self.wins = 0
-        self.random_move_decrease = 0.99
+        self.random_move_decrease = 0.995
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
@@ -58,6 +58,7 @@ class AnnAgent22greedy:
 
             self.board_states = []
             ##Decrease greedy value
+            #if self.random_move_prob > 0.1:
             self.random_move_prob *= self.random_move_decrease
             self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
