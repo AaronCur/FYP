@@ -39,9 +39,10 @@ class RndMiniMaxAgent():
                 if new_score > value:
                     value = new_score
                     column = col
-                
+                    self.potential_moves = [[column, value]]
                 elif new_score == value:
-                    self.potential_moves.append([col, value])
+                    column = col
+                    self.potential_moves.append([column, value])
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break
@@ -50,7 +51,7 @@ class RndMiniMaxAgent():
             max_score_values = []
             #Iterated through the nested lists return the list that has the highest value
             #in the index of 1
-            max_score = max(self.potential_moves, key=lambda x: x[1])
+            #max_score = max(self.potential_moves, key=lambda x: x[1])
             #Index number 1 of the returned min_score is the value of that move
             max_score = max_score[1]
             for i in self.potential_moves:
@@ -63,9 +64,10 @@ class RndMiniMaxAgent():
             #Randomly selects a move that has the same score value associated with them
             #Makes minimax non_deterministic by adding an element of randomness to it 
             index = random.choice(range(len(max_score_moves)))
-            column = max_score_moves[index]
-            value = max_score_values[index]
-            return column, value
+            result_col = max_score_moves[index]
+            result_val = max_score_values[index]
+            self.potential_moves = []
+            return result_col, result_val
 
         else: # Minimizing player
             value = math.inf
@@ -78,11 +80,18 @@ class RndMiniMaxAgent():
                 if new_score < value:
                     value = new_score
                     column = col
+                    self.potential_moves = [[column, value]]
                 elif new_score == value:
-                    self.potential_moves.append([col, value])
+                    column = col
+                    self.potential_moves.append([column, value])
                 beta = min(beta, value)
                 if alpha >= beta:
                     break
+                #if new_score == value:
+                  #  value = new_score
+                   # column = col
+                    #self.potential_moves.append([column, value])
+
             min_score_moves = []
             min_score_values = []
             #Iterated through the nested lists return the list that has the highest value
@@ -95,9 +104,10 @@ class RndMiniMaxAgent():
                         min_score_moves.append(i[0])
                         min_score_values.append(i[1])
             index = random.choice(range(len(min_score_moves)))
-            column = min_score_moves[index]
-            value = min_score_values[index]
-            return column, value
+            result_col = min_score_moves[index]
+            result_val = min_score_values[index]
+            self.potential_moves = []
+            return result_col, result_val
 
     def getTag(self):
         return self.tag
