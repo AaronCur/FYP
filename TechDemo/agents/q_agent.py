@@ -7,18 +7,14 @@ from tflearn.layers.core import input_data, fully_connected
 from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
-#EGREEDY
 
-class AnnAgent22greedy:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=2e-2, filename='agents/models/egreedy/22/ann_agent5_minimax_22_tests.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+class QAgent:
+    def __init__(self, game, training,lr=2e-2,filename=""):
         self.lr = lr
         self.filename = filename
-        self.tag = "Ann"
+        self.tag = "Q"
         self.game = game
-        
+
         self.training_data = []
         self.board_states = []
         self.wins = 0
@@ -26,8 +22,7 @@ class AnnAgent22greedy:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
-        self.description = "ANNeGreedy 22 hidden nodes"
-
+        self.description = "QTable"
         self.nn_model = self.init_model()
 
     def getTag(self):
@@ -47,15 +42,32 @@ class AnnAgent22greedy:
             nn_model.load(self.filename)
         return nn_model
 
+    def reverse_list(self,list_):
+        reverse_list = []
+        for i in reversed(list_):
+            reverse_list.append(i)
+        return reverse_list
+
+    def calc_Q(self, S, A, S1):
+
+        #Q = y *
+        pass
+
     def train(self, reward):
+        board_states = self.reverse_list(self.board_states)
 
         if self.training == True:
-
-
-            for val in self.board_states:
-                val.append(reward)
+            board_states[0].append(reward)
+            for i, val in enumerate(board_states):
+                if i > 0:
+                    val.append(calc_Q(state, action))
+                tempVal = val
+                action = tempVal[0]
+                del tempVal[0]
+                state = tempVal
+                
                 self.training_data.append(
-                val)
+                    val)
 
             self.board_states = []
             ##Decrease greedy value
@@ -64,7 +76,6 @@ class AnnAgent22greedy:
             self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
-       
 
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
@@ -75,7 +86,8 @@ class AnnAgent22greedy:
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
-        network = fully_connected(network, self.hidden_nodes, activation='relu')
+        network = fully_connected(
+            network, self.hidden_nodes, activation='relu')
         network = fully_connected(network, 1, activation='linear')
         network = regression(network, optimizer='adam',
                              learning_rate=self.lr, loss='mean_square', name='target')

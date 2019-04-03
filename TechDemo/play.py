@@ -29,7 +29,7 @@ def main():
     game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
     env = Connect4Env(SQUARESIZE,ROW_COUNT,COLUMN_COUNT,game)
 
-    player1 = HumanAgent()
+    #player1 = HumanAgent()
     #player1 = RandomAgent()
     #player1 = BestMoveAgent()
     #player1 = MiniMaxAgent(game)
@@ -37,8 +37,8 @@ def main():
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
 
-    Training = False
-    #player1 = AnnAgent22greedy(game, Training)
+    Training = True
+    player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
@@ -46,10 +46,10 @@ def main():
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
-    #player2 = BestMoveAgent()
+    player2 = BestMoveAgent()
     #player2 = MiniMaxAgent(game)
     #player2 = MiniMax2Agent(game)
-    player2 = RndMiniMaxAgent(game)
+    #player2 = RndMiniMaxAgent(game)
     #player2 = AnnAgent(game)
     #player2 = AnnAgent2(game)
     #player2 = AnnAgent3(game)
