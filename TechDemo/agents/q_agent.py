@@ -25,6 +25,9 @@ class QAgent:
         self.description = "QTable"
         self.nn_model = self.init_model()
 
+        self.discount = 0.8
+        self.gamma = 0.3
+
     def getTag(self):
         return self.tag
 
@@ -48,10 +51,10 @@ class QAgent:
             reverse_list.append(i)
         return reverse_list
 
-    def calc_Q(self, S, A, S1):
+    def calc_Q(self, reward, steps, prev_q):
 
-        #Q = y *
-        pass
+        #Q(s, a) = reward * discount ** (playsLength - playIndex - 1)  + gamma * maxQ(previousQ)
+        return reward * self.discount ** steps + self.gamma * prev_q
 
     def train(self, reward):
         board_states = self.reverse_list(self.board_states)
@@ -60,12 +63,9 @@ class QAgent:
             board_states[0].append(reward)
             for i, val in enumerate(board_states):
                 if i > 0:
-                    val.append(calc_Q(state, action))
-                tempVal = val
-                action = tempVal[0]
-                del tempVal[0]
-                state = tempVal
-                
+                    steps_from_win = i
+                    prev_Q = board_states[i-1][1]
+                    val.append(self.calc_Q(reward, steps_from_win, prev_Q))
                 self.training_data.append(
                     val)
 
