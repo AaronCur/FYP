@@ -73,7 +73,7 @@ class QAgent:
             ##Decrease greedy value
             #if self.random_move_prob > 0.1:
             self.random_move_prob *= self.random_move_decrease
-            self.nn_model = self.train_model(self.training_data, self.nn_model)
+            #self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
 
@@ -133,18 +133,17 @@ class QAgent:
             boardwins = self.game.can_win(board, otherPiece)
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
             ##If there was an oportunity to block the other player
+            self.board_states.append(
+                [self.add_action_to_observation(prev_observation, action)])
+
             if 1 in otherboardwins:
-                self.training_data.append(
-                    [self.add_action_to_observation(prev_observation, action), -175])
+                self.train(-75)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.training_data.append(
-                    [self.add_action_to_observation(prev_observation, action), +175])
+                self.train(75)
 
-            else:
-                self.board_states.append(
-                    [self.add_action_to_observation(prev_observation, action)])
+               
         #self.training_data.append(
         #   [self.add_action_to_observation(prev_observation, action), 1])
         return action
