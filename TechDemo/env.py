@@ -223,7 +223,7 @@ class Connect4Env:
                                 depth = 3
                                 col, minimax_score = player1.makeMove(
                                     self.board, depth, -math.inf, math.inf, True, self.PLAYER1_PIECE)
-                            elif tag == "Ann":
+                            elif tag == "Ann" or tag == "Q":
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
                             #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
@@ -249,8 +249,14 @@ class Connect4Env:
                                         player2.train(-100)
                                     elif (player1.getTag() == "Ann"):
                                         player1.train(100)
-                                        player1.wins = player1.wins + 1
                                     
+                                    if player1.getTag() == "Q":
+                                        player1.updateQ(100)
+                                        player1.train_model()
+                                    elif player2.getTag() == "Q":
+                                        player2.train_model()
+                                 
+
                                     if self.startTurn == 0:
                                         self.startTurn = 1
                                     else:
@@ -343,6 +349,13 @@ class Connect4Env:
 
                                     elif (player1.getTag() == "Ann"):
                                         player1.train(-100)
+
+                                    if player2.getTag() == "Q":
+                                        player2.updateQ(100)
+                                        player2.train_model()
+                                    elif player1.getTag() == "Q":
+                                        player1.train_model()
+                                 
 
                                     if self.startTurn == 0:
                                         self.startTurn = 1

@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training,lr=2e-2,filename=""):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/egreedy/22/Q_agent.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -18,7 +18,7 @@ class QAgent:
         self.training_data = []
         self.board_states = []
         self.wins = 0
-        self.random_move_decrease = 0.995
+        self.random_move_decrease = 0.996
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
@@ -54,22 +54,27 @@ class QAgent:
     def calc_Q(self, reward, steps, prev_q):
 
         #Q(s, a) = reward * discount ** (playsLength - playIndex - 1)  + gamma * maxQ(previousQ)
-        return reward * self.discount ** steps + self.gamma * prev_q
+        new_Q = (reward * self.discount ** steps) + self.gamma * prev_q
+        return new_Q
 
-    def train(self, reward):
+    def updateQ(self, reward):
         board_states = self.reverse_list(self.board_states)
 
         if self.training == True:
-            board_states[0].append(reward)
+            temp = board_states[0][1]
+            
+            board_states[0][1] = reward
             for i, val in enumerate(board_states):
                 if i > 0:
                     steps_from_win = i
                     prev_Q = board_states[i-1][1]
-                    val.append(self.calc_Q(reward, steps_from_win, prev_Q))
+                    new_Q = self.calc_Q(reward, steps_from_win, prev_Q)
+                    
+                    val[1] = new_Q
                 self.training_data.append(
                     val)
 
-            self.board_states = []
+            
             ##Decrease greedy value
             #if self.random_move_prob > 0.1:
             self.random_move_prob *= self.random_move_decrease
@@ -77,12 +82,12 @@ class QAgent:
         else:
             pass
 
-    def train_model(self, training_data, model):
-        X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
-        y = np.array([i[1] for i in training_data]).reshape(-1, 1)
-        model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
-        model.save(self.filename)
-        return model
+    def train_model(self):
+        self.board_states = []
+        X = np.array([i[0] for i in self.training_data]).reshape(-1, 43, 1)
+        y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
+        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
+        self.nn_model.save(self.filename)
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
@@ -134,14 +139,14 @@ class QAgent:
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
             ##If there was an oportunity to block the other player
             self.board_states.append(
-                [self.add_action_to_observation(prev_observation, action)])
+                [self.add_action_to_observation(prev_observation, action),0])
 
             if 1 in otherboardwins:
-                self.train(-75)
+                self.updateQ(-75)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.train(75)
+                self.updateQ(75)
 
                
         #self.training_data.append(

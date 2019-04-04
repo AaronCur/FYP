@@ -1,2 +1,2 @@
-model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\22\\ann_agent5_minimax_random.tflearn"
-all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\22\\ann_agent5_minimax_random.tflearn"
+model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\22\\Q_agent.tflearn"
+all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\FYP\\TechDemo\\agents\\models\\egreedy\\22\\Q_agent.tflearn"

@@ -17,6 +17,7 @@ from agents.ann_agent_22_greedy import AnnAgent22greedy
 from agents.ann_agent_basic import AnnAgentBasic
 from agents.ann_agent_more_rewards import AnnAgentMoreRewards
 from agents.ann_agent_random import AnnAgentRandom
+from agents.q_agent import QAgent
 import pygame
 
 
@@ -38,16 +39,18 @@ def main():
     #player1 = AnnAgent4(game)
 
     Training = True
-    player1 = AnnAgent22greedy(game, Training)
+    #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
     #player1 = AnnAgentRandom(game, Training)
+    player1 = QAgent(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
-    player2 = BestMoveAgent()
-    #player2 = MiniMaxAgent(game)
+    #player2 = BestMoveAgent()
+    
+    player2 = MiniMaxAgent(game)
     #player2 = MiniMax2Agent(game)
     #player2 = RndMiniMaxAgent(game)
     #player2 = AnnAgent(game)
