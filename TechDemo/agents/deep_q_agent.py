@@ -118,7 +118,7 @@ class DeepQAgent:
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model
 
-    def makeMove(self, board, piece):
+    def make_Move(self, board, piece):
         if piece == 1:
             otherPiece = 2
         else:
@@ -184,14 +184,15 @@ class DeepQAgent:
 
         return qvalues, probs
 
-    def make_move(self,board,piece):
-        
+    def makeMove(self,board,piece):
+
         if piece == 1:
             otherPiece = 2
         else:
             otherPiece = 1
 
         self.board_states_log.append(board)
+        
 
         nn_input = self.generate_observation(board)
         qvalues, probs = self.get_prob(nn_input)
@@ -200,7 +201,15 @@ class DeepQAgent:
              if self.game.is_valid_location(board, index) == False:
                     probs[index] = -1
 
-        action = np.argmax(np.array(probs))
+        randnumber = np.random.rand(1)
+        
+        if(randnumber < self.random_move_prob and self.training == True):
+            action = random.randint(0, 6)
+
+            while self.game.is_valid_location(board, action) == False:
+                action = random.randint(0, 6)
+        else:
+            action = np.argmax(np.array(probs))
 
         if len(self.action_log) > 0:
             self.next_max_log.append(qvalues[action])
@@ -212,7 +221,6 @@ class DeepQAgent:
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)
             self.game.drop_piece(boardCopy, row, action, piece)
-            score = self.game.score_position(boardCopy, piece)
 
             boardwins = self.game.can_win(board, otherPiece)
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
@@ -223,11 +231,11 @@ class DeepQAgent:
 
 
             if 1 in otherboardwins:
-                self.updateQ(-75)
+                self.update_model(-75)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.updateQ(75)
+                self.update_model(75)
 
             else:
                 print("OOps")
@@ -249,6 +257,8 @@ class DeepQAgent:
         return targets
 
     def update_model(self, reward):
+        if self.random_move_prob > 1.5:
+                self.random_move_prob *= self.random_move_decrease
         self.next_max_log.append(reward)
 
         if self.training:

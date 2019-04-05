@@ -18,6 +18,7 @@ from agents.ann_agent_basic import AnnAgentBasic
 from agents.ann_agent_more_rewards import AnnAgentMoreRewards
 from agents.ann_agent_random import AnnAgentRandom
 from agents.q_agent import QAgent
+from agents.deep_q_agent import DeepQAgent
 import pygame
 
 
@@ -44,7 +45,8 @@ def main():
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
     #player1 = AnnAgentRandom(game, Training)
-    player1 = QAgent(game, Training)
+    #player1 = QAgent(game, Training)
+    player1 = DeepQAgent(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
