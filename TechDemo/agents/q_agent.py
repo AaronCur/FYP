@@ -61,8 +61,7 @@ class QAgent:
         #board_states = self.reverse_list(self.board_states)
         if self.training == True:
             temp = self.board_states[0][1]
-            if self.board_states[0][1] < reward:
-                self.board_states[0][1] = reward
+            self.board_states[0][1] = self.board_states[0][1] + reward
             for i, state in enumerate(self.board_states):
                 if i > 0:
                     steps_from_win = i
@@ -70,12 +69,11 @@ class QAgent:
                     new_Q = round(self.calc_Q(reward, steps_from_win, prev_Q),3)
 
                     #Update Q value if the current Q is less then the new Q
-                    if state[1] < new_Q:
-                        state[1] = new_Q
+                    state[1] = state[1] + new_Q
 
             ##Decrease greedy value
-            #if self.random_move_prob > 0.1:
-            self.random_move_prob *= self.random_move_decrease
+            if self.random_move_prob > 0.13:
+                self.random_move_prob *= self.random_move_decrease
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
@@ -145,7 +143,7 @@ class QAgent:
             #Instead of having to reverse the list later if i used .append
     
             self.board_states.insert(0,
-                [self.add_action_to_observation(prev_observation, action),-1000])
+                [self.add_action_to_observation(prev_observation, action),0])
 
             if 1 in otherboardwins:
                 self.updateQ(-75)

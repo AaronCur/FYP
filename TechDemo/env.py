@@ -111,7 +111,7 @@ class Connect4Env:
         player1Avg = self.calc_avg(self.player1_wins)
         player2Avg = self.calc_avg(self.player2_wins)
         
-        if player1.getTag() == "Ann":
+        if player1.getTag() == "Ann" or player1.getTag()=="Q":
             plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
             plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
             if player1.training == False:
@@ -125,6 +125,7 @@ class Connect4Env:
                 plt.title('Trained '+ str(player2.description)+' vs ' + str(player1.tag))
             else:
                 plt.title('Training '+ str(player2.description)+' vs ' + str(player1.tag))
+
     
         plt.legend()
   
