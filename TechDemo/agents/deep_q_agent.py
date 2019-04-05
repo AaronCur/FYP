@@ -25,9 +25,12 @@ class DeepQAgent:
         self.hidden_nodes = 22
         self.description = "Q Temporal Difference"
         self.nn_model = self.init_model()
-
+        self.action_log = []
         self.discount = 0.8
         self.gamma = 0.3
+        self.board_states_log = []
+        self.QValues_log = []
+        self.next_max_log = []
 
     def getTag(self):
         return self.tag
@@ -93,8 +96,20 @@ class DeepQAgent:
         self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
         self.nn_model.save(self.filename)
 
+    def train(self, inputs, outputs):
+        for state in self.board_states:
+            if state[1] == -1000:
+                print("oops")
+            self.training_data.append(state)
+        self.board_states = []
+        X = np.array([i[0] for i in self.training_data]).reshape(-1, 42, 1)
+        y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
+        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
+        self.nn_model.save(self.filename)
+
+
     def model(self):
-        network = input_data(shape=[None, 43, 1], name='input')
+        network = input_data(shape=[None, 42, 1], name='input')
         network = fully_connected(
             network, self.hidden_nodes, activation='relu')
         network = fully_connected(network, 7, activation='linear')
@@ -161,7 +176,85 @@ class DeepQAgent:
 
         return action
 
-    def get_prob(self, input):
+    def get_prob(self, inputs):
 
-        probs = self.nn_model.predict(
-            self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1))
+        qvalues = self.nn_model.predict(inputs)
+
+        probs = self.softmax(qvalues)
+
+        return qvalues, probs
+
+    def make_move(self,board,piece):
+        
+        if piece == 1:
+            otherPiece = 2
+        else:
+            otherPiece = 1
+
+        self.board_states_log.append(board)
+
+        nn_input = self.generate_observation(board)
+        qvalues, probs = self.get_prob(nn_input)
+
+        for index, p in enumerate(qvalues):
+             if self.game.is_valid_location(board, index) == False:
+                    probs[index] = -1
+
+        action = np.argmax(np.array(probs))
+
+        if len(self.action_log) > 0:
+            self.next_max_log.append(qvalues[action])
+
+        self.action_log.append(action)
+        self.QValues_log.append(qvalues)
+
+        if self.training == True:
+            boardCopy = board.copy()
+            row = self.game.get_next_open_row(boardCopy, action)
+            self.game.drop_piece(boardCopy, row, action, piece)
+            score = self.game.score_position(boardCopy, piece)
+
+            boardwins = self.game.can_win(board, otherPiece)
+            otherboardwins = self.game.can_win(boardCopy, otherPiece)
+            ##If there was an oportunity to block the other player
+            #Add to the start of the list, more recent actions are first in the lsit, makes it easier
+            #to distribute award back through previous moves
+            #Instead of having to reverse the list later if i used .append
+
+
+            if 1 in otherboardwins:
+                self.updateQ(-75)
+
+            ##If a winning move was blocked
+            elif boardwins != otherboardwins:
+                self.updateQ(75)
+
+            else:
+                print("OOps")
+
+
+    def softmax(self,x):
+        return np.exp(x) / np.sum(np.exp(x), axis=0)
+
+    def calculate_targets(self):
+
+        game_length = len(self.action_log)
+        targets= []
+
+        for i in range(game_length):
+            target = self.QValues_log[i]
+            target[self.action_log[i]] += self.discount * self.next_max_log[i]
+            targets.append(target)
+        
+        return targets
+
+    def update_model(self, reward):
+        self.next_max_log.append(reward)
+
+        if self.training:
+            targets = self.calculate_targets()
+
+            nn_input = [self.generate_observation(x) for x in self.board_states_log]
+
+        self.train(nn_input, targets)
+
