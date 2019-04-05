@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/egreedy/22/Q_agent.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -22,7 +22,7 @@ class QAgent:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
-        self.description = "QTable"
+        self.description = "Q Temporal Difference"
         self.nn_model = self.init_model()
 
         self.discount = 0.8
@@ -58,23 +58,21 @@ class QAgent:
         return new_Q
 
     def updateQ(self, reward):
-        board_states = self.reverse_list(self.board_states)
-
+        #board_states = self.reverse_list(self.board_states)
         if self.training == True:
-            temp = board_states[0][1]
-            
-            board_states[0][1] = reward
-            for i, val in enumerate(board_states):
+            temp = self.board_states[0][1]
+            if self.board_states[0][1] < reward:
+                self.board_states[0][1] = reward
+            for i, state in enumerate(self.board_states):
                 if i > 0:
                     steps_from_win = i
-                    prev_Q = board_states[i-1][1]
-                    new_Q = self.calc_Q(reward, steps_from_win, prev_Q)
-                    
-                    val[1] = new_Q
-                self.training_data.append(
-                    val)
+                    prev_Q = self.board_states[i-1][1]
+                    new_Q = round(self.calc_Q(reward, steps_from_win, prev_Q),3)
 
-            
+                    #Update Q value if the current Q is less then the new Q
+                    if state[1] < new_Q:
+                        state[1] = new_Q
+
             ##Decrease greedy value
             #if self.random_move_prob > 0.1:
             self.random_move_prob *= self.random_move_decrease
@@ -83,6 +81,10 @@ class QAgent:
             pass
 
     def train_model(self):
+        for state in self.board_states:
+            if state[1] == -1000:
+                print("oops")
+            self.training_data.append(state)
         self.board_states = []
         X = np.array([i[0] for i in self.training_data]).reshape(-1, 43, 1)
         y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
@@ -138,8 +140,12 @@ class QAgent:
             boardwins = self.game.can_win(board, otherPiece)
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
             ##If there was an oportunity to block the other player
-            self.board_states.append(
-                [self.add_action_to_observation(prev_observation, action),0])
+            #Add to the start of the list, more recent actions are first in the lsit, makes it easier 
+            #to distribute award back through previous moves 
+            #Instead of having to reverse the list later if i used .append
+    
+            self.board_states.insert(0,
+                [self.add_action_to_observation(prev_observation, action),-1000])
 
             if 1 in otherboardwins:
                 self.updateQ(-75)
@@ -148,21 +154,7 @@ class QAgent:
             elif boardwins != otherboardwins:
                 self.updateQ(75)
 
-               
-        #self.training_data.append(
-        #   [self.add_action_to_observation(prev_observation, action), 1])
-        return action
-       # else:
-        # boardCopy = board.copy()
-        # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        #self.makeMove(board, piece)
-        # action = random.randint(0, 6)
+            else:
+                print("OOps")
 
-        # while self.game.is_valid_location(board, action) == False:
-        #  action = random.randint(0, 6)
-        # self.training_data.append(
-        #[self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        # return action
+        return action

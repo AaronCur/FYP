@@ -365,6 +365,12 @@ class Connect4Env:
                     if 0 not in self.board:
                         self.game_over = True
                         draws = draws + 1
+                        if player1.getTag() == "Q":
+                            player1.updateQ(75)
+                            player1.train_model()
+                        if player2.getTag() == "Q":
+                            player2.update(75)
+                            player2.train_model()
                     #if self.game_over:
                     # pygame.time.wait(3000)
             percentage = self.win_percentage(player1wins,self.games )

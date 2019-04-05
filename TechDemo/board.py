@@ -65,13 +65,40 @@ class Connect4Board:
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(self.ROW_COUNT):
                     if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == self.EMPTY:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                        #Check if placing in empty col will result in a win
+                        row = self.get_next_open_row(board, c+3)
+
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+                            
                     if board[r][c] == self.EMPTY and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == piece:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                         #Check if placingin empty col will result in a win
+                        row = self.get_next_open_row(board, c)
+
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+
+                    if board[r][c] == piece and board[r][c+1] == self.EMPTY and board[r][c+2] == piece and board[r][c+3] == piece:
+                         #Check if placingin empty col will result in a win
+                        row = self.get_next_open_row(board, c+1)
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+                    
+                    if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == self.EMPTY and board[r][c+3] == piece:
+                         #Check if placingin empty col will result in a win
+          
+                        row = self.get_next_open_row(board, c+2)
+            
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
 
             # Check vertical locations for winable move
             for c in range(self.COLUMN_COUNT):
@@ -80,34 +107,78 @@ class Connect4Board:
                         winning_moves.append(1)
                     else:
                         winning_moves.append(0)
-                    if board[r][c] == self.EMPTY and board[r+1][c] == piece and board[r+2][c] == piece and board[r+3][c] == piece:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
 
             # Check positively sloped diaganols for winable move
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(self.ROW_COUNT-3):
                     if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == self.EMPTY:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                  
+                        row = self.get_next_open_row(board, c+3)
+    
+                        if row == r+3:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                      
+                        row = self.get_next_open_row(board, c)
+                     
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
 
+                    if board[r][c] == piece and board[r+1][c+1] == self.EMPTY and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
+                      
+                        row = self.get_next_open_row(board, c+1)
+                   
+                        if row == r+1:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+                    if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == self.EMPTY and board[r+3][c+3] == piece:
+                      
+                        row = self.get_next_open_row(board, c+2)
+                    
+                        if row == r+2:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
             # Check negatively sloped diaganols for winable move
             for c in range(self.COLUMN_COUNT-3):
                 for r in range(3, self.ROW_COUNT):
                     if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == self.EMPTY:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                      
+                        row = self.get_next_open_row(board, c+3)
+                      
+                        if row == r-3:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
                     if board[r][c] == self.EMPTY and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
-                        winning_moves.append(1)
-                    else:
-                        winning_moves.append(0)
+                     
+                        row = self.get_next_open_row(board, c)
+                   
+                        if row == r:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+                    if board[r][c] == piece and board[r-1][c+1] == self.EMPTY and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
+               
+                        row = self.get_next_open_row(board, c+1)
+                   
+                        if row == r-1:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
+                    if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == self.EMPTY and board[r-3][c+3] == piece:
+                     
+                        row = self.get_next_open_row(board, c+2)
+                     
+                        if row == r-2:
+                            winning_moves.append(1)
+                        else:
+                            winning_moves.append(0)
                         
             return winning_moves
 
