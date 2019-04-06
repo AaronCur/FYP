@@ -22,7 +22,7 @@ class DeepQAgent:
         self.random_move_decrease = 0.996
         self.random_move_prob = 1
         self.training = training
-        self.hidden_nodes = 22
+        self.hidden_nodes = 27
         self.description = "Q Temporal Difference"
         self.nn_model = self.init_model()
         self.action_log = []
@@ -31,13 +31,18 @@ class DeepQAgent:
         self.board_states_log = []
         self.QValues_log = []
         self.next_max_log = []
+        self.nn_input = []
+        self.nn_output = []
+        self.training_data = []
+        self.training_output = []
+        self.training_input = []
 
     def getTag(self):
         return self.tag
 
     def generate_observation(self, board):
         #Flatten board array
-        flattened = np.array(board).reshape(-1, 42, 1)
+        flattened = np.array(board).reshape(-1,42,1)
         return flattened
 
     def add_action_to_observation(self, observation, action):
@@ -96,17 +101,7 @@ class DeepQAgent:
         self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
         self.nn_model.save(self.filename)
 
-    def train(self, inputs, outputs):
-        for state in self.board_states:
-            if state[1] == -1000:
-                print("oops")
-            self.training_data.append(state)
-        self.board_states = []
-        X = np.array([i[0] for i in self.training_data]).reshape(-1, 42, 1)
-        y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
-        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
-        self.nn_model.save(self.filename)
-
+    
 
     def model(self):
         network = input_data(shape=[None, 42, 1], name='input')
@@ -180,9 +175,9 @@ class DeepQAgent:
 
         qvalues = self.nn_model.predict(inputs)
 
-        probs = self.softmax(qvalues)
+        probs = self.softmax(qvalues[0])
 
-        return qvalues, probs
+        return qvalues[0], probs
 
     def makeMove(self,board,piece):
 
@@ -231,40 +226,60 @@ class DeepQAgent:
 
 
             if 1 in otherboardwins:
-                self.update_model(-75)
+                self.update_values(-100)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.update_model(75)
+                self.update_values(175)
 
             else:
                 print("OOps")
 
+        return action
 
     def softmax(self,x):
         return np.exp(x) / np.sum(np.exp(x), axis=0)
 
-    def calculate_targets(self):
+    def calculate_targets(self, reward):
 
         game_length = len(self.action_log)
         targets= []
 
         for i in range(game_length):
             target = self.QValues_log[i]
-            target[self.action_log[i]] += self.discount * self.next_max_log[i]
+            steps = game_length - i
+            target[self.action_log[i]] = (reward *self.discount **steps) + self.gamma *self.next_max_log[i]
             targets.append(target)
         
         return targets
 
-    def update_model(self, reward):
+    def update_values(self, reward):
         if self.random_move_prob > 1.5:
                 self.random_move_prob *= self.random_move_decrease
         self.next_max_log.append(reward)
 
         if self.training:
-            targets = self.calculate_targets()
+            self.nn_output = self.calculate_targets(reward)
+        
+            self.nn_input = np.array([x for x in self.board_states_log]).reshape(-1,42,1)
 
-            nn_input = [self.generate_observation(x) for x in self.board_states_log]
+            #self.training_input.append(nn_input)
+        #self.train(nn_input, targets)
 
-        self.train(nn_input, targets)
+    def train(self):
+       
+        self.training_input.extend(self.nn_input)
+        self.training_output.extend(self.nn_output)
+        #self.
+        X = self.training_input
+        y = self.training_output
+        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
+        self.nn_model.save(self.filename)
+
+        self.board_states_log = []
+        self.action_log = []
+        self.next_max_log = []
+        self.QValues_log = []
+        self.nn_output = []
+        self.nn_input = []
 

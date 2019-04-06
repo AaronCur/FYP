@@ -252,10 +252,10 @@ class Connect4Env:
                                         player1.train(100)
                                     
                                     if player1.getTag() == "Q":
-                                        player1.updateQ(100)
-                                        player1.train_model()
+                                        player1.update_values(100)
+                                        player1.train()
                                     elif player2.getTag() == "Q":
-                                        player2.train_model()
+                                        player2.train()
                                  
 
                                     if self.startTurn == 0:
@@ -353,9 +353,9 @@ class Connect4Env:
 
                                     if player2.getTag() == "Q":
                                         player2.updateQ(100)
-                                        player2.train_model()
+                                        player2.train()
                                     elif player1.getTag() == "Q":
-                                        player1.train_model()
+                                        player1.train()
                                  
 
                                     if self.startTurn == 0:
@@ -367,11 +367,11 @@ class Connect4Env:
                         self.game_over = True
                         draws = draws + 1
                         if player1.getTag() == "Q":
-                            player1.updateQ(75)
-                            player1.train_model()
+                            player1.update_values(75)
+                            player1.train()
                         if player2.getTag() == "Q":
-                            player2.update(75)
-                            player2.train_model()
+                            player2.update_values(75)
+                            player2.train()
                     #if self.game_over:
                     # pygame.time.wait(3000)
             percentage = self.win_percentage(player1wins,self.games )
