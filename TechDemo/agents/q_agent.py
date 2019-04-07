@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Deep_q_ann.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -22,7 +22,7 @@ class QAgent:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
-        self.description = "Q Temporal Difference"
+        self.description = "Deep Q ANN"
         self.nn_model = self.init_model()
 
         self.discount = 0.8
@@ -57,7 +57,7 @@ class QAgent:
         new_Q = (reward * self.discount ** steps) + self.gamma * prev_q
         return new_Q
 
-    def updateQ(self, reward):
+    def update_values(self, reward):
         #board_states = self.reverse_list(self.board_states)
         if self.training == True:
             temp = self.board_states[0][1]
@@ -72,13 +72,13 @@ class QAgent:
                     state[1] = state[1] + new_Q
 
             ##Decrease greedy value
-            if self.random_move_prob > 0.13:
-                self.random_move_prob *= self.random_move_decrease
+            
+            #self.random_move_prob *= self.random_move_decrease
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
 
-    def train_model(self):
+    def train(self):
         for state in self.board_states:
             if state[1] == -1000:
                 print("oops")
@@ -88,6 +88,7 @@ class QAgent:
         y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
         self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
         self.nn_model.save(self.filename)
+        self.random_move_prob *= self.random_move_decrease
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
@@ -146,11 +147,11 @@ class QAgent:
                 [self.add_action_to_observation(prev_observation, action),0])
 
             if 1 in otherboardwins:
-                self.updateQ(-75)
+                self.update_values(-75)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.updateQ(75)
+                self.update_values(75)
 
             else:
                 print("OOps")

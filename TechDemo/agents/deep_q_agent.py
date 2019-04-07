@@ -10,7 +10,7 @@ from collections import Counter
 
 
 class DeepQAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/deep_q.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
