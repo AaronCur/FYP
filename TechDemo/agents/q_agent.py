@@ -75,6 +75,7 @@ class QAgent:
             
             #self.random_move_prob *= self.random_move_decrease
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
+            self.random_move_prob *= self.random_move_decrease
         else:
             pass
 
