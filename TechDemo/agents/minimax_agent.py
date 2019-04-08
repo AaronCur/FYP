@@ -6,6 +6,7 @@ class MiniMaxAgent():
         self.difficulty = 1
         self.tag = "MiniMax"
         self.game = game
+        self.description = self.tag
 
     def makeMove(self ,board, depth, alpha, beta, maximizingPlayer, PIECE):
         if PIECE == 1:

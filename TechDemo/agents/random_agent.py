@@ -2,8 +2,8 @@ import random
 
 class RandomAgent():
     def __init__(self):
-         self.tag = "Random"
-
+        self.tag = "Random"
+        self.description = self.tag
     def makeMove(self, cc):
         return random.randint(0, cc-1)
 

@@ -5,6 +5,8 @@ import pygame
 import math
 import random
 import matplotlib.pyplot as plt
+import threading
+
 
 class Connect4Env:
     def __init__(self, squaresize,row,col,game):
@@ -19,7 +21,7 @@ class Connect4Env:
         self.WIDTH = self.game.COLUMN_COUNT * self.SQUARESIZE
         self.HEIGHT = (self.game.ROW_COUNT+1) * self.SQUARESIZE
 
-        self.size = (self.WIDTH, self.HEIGHT)
+        self.size = (self.WIDTH*2, self.HEIGHT)
 
         self.screen = pygame.display.set_mode(self.size)
         
@@ -35,10 +37,11 @@ class Connect4Env:
         self.PLAYER1_PIECE = 1
         self.PLAYER2_PIECE = 2
 
-        self.BG = (0,0,0)
-        self.BOARD = (0,0,255)
-        self.RED = (255,0,0)
-        self.YELLOW = (255,255,0)
+        self.BG = (255,255,255)
+        self.BOARD = (66,134,215)
+        self.RED = (250,56,46)
+        self.YELLOW = (250,232,46)
+        self.STATS = (127,127,127)
 
         self.win_his =[]
         self.player1_wins = []
@@ -51,6 +54,10 @@ class Connect4Env:
 
         self.gui = False
         self.startTurn = 0
+
+        self.totalPlayer1wins = 0
+        self.totalPlayer2wins = 0
+        self.myfont = pygame.font.SysFont("monospace", 45)
 
     ##def reset(self):
         ##self.board = TicTacToeBoard()
@@ -84,20 +91,106 @@ class Connect4Env:
         self.game.winning_move(board, piece)
 
     def draw_board(self,board, screen, pygame):
-            for c in range(self.COLUMN_COUNT):
-                for r in range(self.ROW_COUNT):
-                    pygame.draw.rect(screen, self.BOARD, (c*self.SQUARESIZE, r*self.SQUARESIZE+self.SQUARESIZE, self.SQUARESIZE, self.SQUARESIZE))
-                    pygame.draw.circle(screen, self.BG, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), int(r*self.SQUARESIZE+self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
+        
+        for c in range(self.COLUMN_COUNT):
+            for r in range(self.ROW_COUNT):
+                pygame.draw.rect(screen, self.BOARD, (c*self.SQUARESIZE, r*self.SQUARESIZE+self.SQUARESIZE, self.SQUARESIZE, self.SQUARESIZE))
+                pygame.draw.circle(screen, self.BG, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), int(r*self.SQUARESIZE+self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
 
-            for c in range(self.COLUMN_COUNT):
-                for r in range(self.ROW_COUNT):
-                    if board[r][c] == 1:
-                        pygame.draw.circle(screen, self.RED, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
-                    elif board[r][c] == 2:
-                        pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
-            pygame.display.update()
+        for c in range(self.COLUMN_COUNT):
+            for r in range(self.ROW_COUNT):
+                if board[r][c] == 1:
+                    pygame.draw.circle(screen, self.RED, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
+                elif board[r][c] == 2:
+                    pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
+        
+        #pygame.display.update()
+    
+    def display_stats(self, player1, player2):
+        #myfont = pygame.font.SysFont("monospace", 45)
+
+        statsPosX = (self.screen.get_rect().width / 4) * 3
+
+        agentText = self.myfont.render(
+                " : Agent : ", 1, self.BOARD)
+        self.screen.blit(agentText, (statsPosX - 
+        agentText.get_rect().width / 2, 100))
+        
+        agent1 = self.myfont.render(
+                str(player1.description) , 1, self.RED)
+        self.screen.blit(agent1, (statsPosX- 
+        (agentText.get_rect().width / 2) - agent1.get_rect().width, 100))
+        
+        agent2 = self.myfont.render(
+                 str(player2.description), 1, self.YELLOW)
+        self.screen.blit(agent2, (statsPosX+ 
+        (agentText.get_rect().width / 2) , 100))
+        
+
+        wins = self.myfont.render(
+                " : Wins : ", 1, self.BOARD)
+        self.screen.blit(wins, (statsPosX - 
+        wins.get_rect().width / 2, 200))
+        
+        player1WinsText = self.myfont.render(
+                str(self.totalPlayer1wins)+ " ", 1, self.STATS)
+        self.screen.blit(player1WinsText, (statsPosX -
+        (wins.get_rect().width / 2) - player1WinsText.get_rect().width, 200))
+        temp = wins.get_rect().center
+        
+        player2WinsText = self.myfont.render(
+               " " + str(self.totalPlayer2wins), 1, self.STATS)
+        self.screen.blit(player2WinsText, (statsPosX + 
+        (wins.get_rect().width / 2) , 200))
+        
+
+        currentPercent = self.myfont.render(
+                " : Current% : ", 1, self.BOARD)
+        self.screen.blit(currentPercent, (statsPosX - 
+        currentPercent.get_rect().width / 2, 300))
+
+        if len(self.player1_wins) > 0:
+            currentP1Percentage = self.player1_wins[-1]
+        else:
+            currentP1Percentage = 0
+
+        if len(self.player2_wins) >0:
+            currentP2Percentage = self.player2_wins[-1]
+        else:
+            currentP2Percentage = 0
+        
+        
+        player1Percentage = self.myfont.render(
+                 str(currentP1Percentage) + "%" , 1, self.STATS)
+        self.screen.blit(player1Percentage, ((statsPosX - 
+        currentPercent.get_rect().width / 2) - player1Percentage.get_rect().width, 300))
+
+        player2Percentage = self.myfont.render(
+                 str(currentP2Percentage) + "%" , 1, self.STATS)
+        self.screen.blit(player2Percentage, ((statsPosX + 
+        currentPercent.get_rect().width / 2), 300))
+
+        overall = self.myfont.render(
+                " : Win% : ", 1, self.BOARD)
+        self.screen.blit(overall, (statsPosX - 
+        overall.get_rect().width / 2, 400))
+
+        player1Overall = self.myfont.render(
+                 str(round(self.win_percentage(self.totalPlayer1wins,self.gameNumber),2)) + "% " , 1, self.STATS)
+        self.screen.blit(player1Overall, ((statsPosX - 
+        overall.get_rect().width / 2) - player1Overall.get_rect().width, 400))
+
+        player2Overall = self.myfont.render(
+                 " " + str(round(self.win_percentage(self.totalPlayer2wins,self.gameNumber),2)) + "%", 1, self.STATS)
+        self.screen.blit(player2Overall, (statsPosX + 
+        overall.get_rect().width / 2, 400))
+        
+
     def calc_avg(self, wins):
-        return sum(wins) / len(wins) 
+        if wins == []:
+            return 0
+        else:
+            return sum(wins) / len(wins) 
 
 
     def plot_history(self, player1, player2):
@@ -118,27 +211,36 @@ class Connect4Env:
                 plt.title('Trained '+ str(player1.description)+' vs ' + str(player2.tag))
             else:
                 plt.title('Training '+ str(player1.description)+' vs ' + str(player2.tag))
-        else:
+        elif player2.getTag() == "Ann" or player2.getTag() == "Q":
             plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
             plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
             if player1.training == False:
                 plt.title('Trained '+ str(player2.description)+' vs ' + str(player1.tag))
             else:
                 plt.title('Training '+ str(player2.description)+' vs ' + str(player1.tag))
+        else :
+            plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
+            plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
+            plt.title(str(player1.description)+' vs ' + str(player2.description))
+           
 
     
         plt.legend()
-  
-        plt.show()
 
+        
+        plt.savefig("graph.png")
+        graphImg = pygame.image.load("graph.png")
+        self.screen.blit(graphImg, (700,100))
+        
+        #plt.show()
     def win_percentage(self,wins, games):
         percentage = 100 * float(wins) / float(games)
         self.win_his.append(percentage)
         return percentage
 
     def play(self,player1, player2):
-        gameNumber = 0
-       
+        self.gameNumber = 0
+        myfont = pygame.font.SysFont("monospace", 75)
         for i in range(self.battles):
             player1wins = 0
             player2wins = 0
@@ -148,21 +250,26 @@ class Connect4Env:
                 self.startTurn = 0
                 self.turn = self.startTurn
                 
-                gameNumber+=1
+                self.gameNumber+=1
                 
                 self.screen = pygame.display.set_mode(self.size)
-                myfont = pygame.font.SysFont("monospace", 75)
+                self.screen.fill(self.BG)
+                
                 self.game_over = False
             
                 self.board = self.game.create_board()
                 print("episode "+ str(i))
 
                 numGames = myfont.render(
-                    "Game: " + str(gameNumber), 1, self.RED)
+                    "Game: " + str(self.gameNumber), 1, self.RED)
                 self.screen.blit(numGames, (40, 10))
 
                 self.draw_board(self.board, self.screen, pygame)
-                pygame.display.update()
+                #self.display_stats(player1,player2)
+                
+                
+                
+                
 
             
                 while not self.game_over:
@@ -196,14 +303,22 @@ class Connect4Env:
                                         label = myfont.render("Human 1 wins!!", 1, self.RED)
                                         self.screen.blit(label, (40,10))
                                         self.game_over = True
+                                        player1wins = player1wins + 1
+                                        self.totalPlayer1wins = self.totalPlayer1wins + 1
                                         if(player2.getTag() == "Ann"):
                                             player2.train(-100)
+                                        
+                                        elif player2.getTag() == "Q":
+                                            player2.update_values(-100)
+                                            player2.train()
 
                                     self.turn += 1
                                     self.turn = self.turn % 2
 
                                     self.print_board(self.board)
                                     self.draw_board(self.board, self.screen, pygame)
+                                    pygame.display.flip()
+                                    
                                     pygame.time.wait(250)
                         else:
                             tag = player1.getTag()
@@ -235,6 +350,8 @@ class Connect4Env:
 
                                 self.print_board(self.board)
                                 self.draw_board(self.board, self.screen, pygame)
+                                pygame.display.flip()
+                               
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
@@ -246,6 +363,7 @@ class Connect4Env:
                                     self.screen.blit(label, (40, 10))
                                     self.game_over = True
                                     player1wins = player1wins + 1
+                                    self.totalPlayer1wins = self.totalPlayer1wins + 1
                                     if(player2.getTag() == "Ann"):
                                         player2.train(-100)
                                     elif (player1.getTag() == "Ann"):
@@ -290,7 +408,8 @@ class Connect4Env:
                                         label = myfont.render("Human 2 wins!!", 1, self.YELLOW)
                                         self.screen.blit(label, (40,10))
                                         self.game_over = True
-                                        
+                                        player2wins = player2wins + 1
+                                        self.totalPlayer2wins= self.player2_wins + 1
                                         if (player1.getTag() == "Ann"):
                                             player1.train(-100)
 
@@ -299,6 +418,8 @@ class Connect4Env:
 
                                     self.print_board(self.board)
                                     self.draw_board(self.board, self.screen, pygame)
+                                    pygame.display.flip()
+                                   
                                     pygame.time.wait(250)
 
 
@@ -332,6 +453,8 @@ class Connect4Env:
                                 self.print_board(self.board)
                             
                                 self.draw_board(self.board, self.screen, pygame)
+                                pygame.display.flip()
+                               
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
@@ -343,10 +466,10 @@ class Connect4Env:
                                         str(tag)+" wins!!", 1, self.YELLOW)
                                     self.screen.blit(label, (40, 10))
                                     self.game_over = True
-                                    player2wins = player2wins + 1
+                                    player2wins = player2wins +1
+                                    self.totalPlayer2wins = self.totalPlayer2wins + 1
                                     if(player2.getTag() == "Ann"):
                                         player2.train(100)
-                                        player2.wins = player2.wins + 1
 
                                     elif (player1.getTag() == "Ann"):
                                         player1.train(-100)
@@ -373,17 +496,20 @@ class Connect4Env:
                         if player2.getTag() == "Q":
                             player2.update_values(50)
                             player2.train()
-                    #if self.game_over:
-                    # pygame.time.wait(3000)
+                    #if self.game_over:   # pygame.time.wait(3000)
             percentage = self.win_percentage(player1wins,self.games )
             self.player1_wins.append(percentage)
             percentage = self.win_percentage(player2wins, self.games)
             self.player2_wins.append(percentage)
             percentage = self.win_percentage(draws, self.games)
             self.drawn_games.append(percentage)
-            self.game_number.append(gameNumber)
+            self.game_number.append(self.gameNumber)
+            threading.Thread(target=self.plot_history,
+                args=(player1, player2)
+                ).start()
 
-        self.plot_history(player1, player2)
+            
+
         if player1.description == "ANNeGreedy trained with random moves":
             player1.train_model()
 

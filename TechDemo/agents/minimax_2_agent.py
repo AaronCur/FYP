@@ -7,6 +7,7 @@ class MiniMax2Agent():
         self.difficulty = 2
         self.tag = "MiniMax level 2"
         self.game = game
+        self.description = self.tag
 
     def makeMove(self, board, depth, alpha, beta, maximizingPlayer, PIECE):
         if PIECE == 1:

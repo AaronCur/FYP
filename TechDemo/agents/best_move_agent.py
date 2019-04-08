@@ -3,6 +3,7 @@ import random
 class BestMoveAgent():
     def __init__(self):
          self.tag = "BestMove"
+         self.description = self.tag
 
     def makeMove(self,board, piece, game):
 

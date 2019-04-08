@@ -9,6 +9,7 @@ class RndMiniMaxAgent():
         self.tag = "rnd MiniMax"
         self.game = game
         self.potential_moves = []
+        self.description = self.tag
 
     def makeMove(self ,board, depth, alpha, beta, maximizingPlayer, PIECE):
         if PIECE == 1:
