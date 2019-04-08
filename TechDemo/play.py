@@ -45,8 +45,8 @@ def main():
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
     #player1 = AnnAgentRandom(game, Training)
-    #player1 = QAgent(game, Training)
-    player1 = DeepQAgent(game, Training)
+    player1 = QAgent(game, Training)
+    #player1 = DeepQAgent(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()

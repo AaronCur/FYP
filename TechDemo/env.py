@@ -255,8 +255,8 @@ class Connect4Env:
                                         player1.update_values(100)
                                         player1.train()
                                     elif player2.getTag() == "Q":
+                                        player2.update_values(-100)
                                         player2.train()
-                                 
 
                                     if self.startTurn == 0:
                                         self.startTurn = 1
@@ -352,9 +352,10 @@ class Connect4Env:
                                         player1.train(-100)
 
                                     if player2.getTag() == "Q":
-                                        player2.updateQ(100)
+                                        player2.update_values(100)
                                         player2.train()
                                     elif player1.getTag() == "Q":
+                                        player1.update_values(100)
                                         player1.train()
                                  
 
@@ -367,10 +368,10 @@ class Connect4Env:
                         self.game_over = True
                         draws = draws + 1
                         if player1.getTag() == "Q":
-                            player1.update_values(75)
+                            player1.update_values(50)
                             player1.train()
                         if player2.getTag() == "Q":
-                            player2.update_values(75)
+                            player2.update_values(50)
                             player2.train()
                     #if self.game_over:
                     # pygame.time.wait(3000)

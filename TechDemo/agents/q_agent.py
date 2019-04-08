@@ -148,13 +148,17 @@ class QAgent:
                 [self.add_action_to_observation(prev_observation, action),0])
 
             if 1 in otherboardwins:
-                self.update_values(-100)
+             
+                self.training_data.append(
+                [self.add_action_to_observation(prev_observation, action),-175])
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.update_values(175)
+                self.training_data.append(
+                [self.add_action_to_observation(prev_observation, action),175])
 
             else:
-                print("OOps")
+                self.board_states.insert(0,
+                [self.add_action_to_observation(prev_observation, action),0])
 
         return action
