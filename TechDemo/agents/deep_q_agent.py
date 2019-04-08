@@ -10,7 +10,7 @@ from collections import Counter
 
 
 class DeepQAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/deep_q.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Deep_Q_Agent.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -23,7 +23,7 @@ class DeepQAgent:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 27
-        self.description = "Q Temporal Difference"
+        self.description = "Deep Q Agent"
         self.nn_model = self.init_model()
         self.action_log = []
         self.discount = 0.8
@@ -186,7 +186,7 @@ class DeepQAgent:
         else:
             otherPiece = 1
 
-        self.board_states_log.append(board)
+        self.board_states_log.insert(0,board)
         
 
         nn_input = self.generate_observation(board)
@@ -207,10 +207,10 @@ class DeepQAgent:
             action = np.argmax(np.array(probs))
 
         if len(self.action_log) > 0:
-            self.next_max_log.append(qvalues[action])
+            self.next_max_log.insert(0,qvalues[action])
 
-        self.action_log.append(action)
-        self.QValues_log.append(qvalues)
+        self.action_log.insert(0,action)
+        self.QValues_log.insert(0,qvalues)
 
         if self.training == True:
             boardCopy = board.copy()
@@ -226,11 +226,11 @@ class DeepQAgent:
 
 
             if 1 in otherboardwins:
-                self.update_values(-100)
+                self.update_values(-75)
 
             ##If a winning move was blocked
             elif boardwins != otherboardwins:
-                self.update_values(175)
+                self.update_values(75)
 
             else:
                 print("OOps")
@@ -244,21 +244,23 @@ class DeepQAgent:
 
         game_length = len(self.action_log)
         targets= []
+        self.QValues_log[0][self.action_log[0]] = reward
 
         for i in range(game_length):
-            target = self.QValues_log[i]
-            steps = game_length - i
-            target[self.action_log[i]] = (reward *self.discount **steps) + self.gamma *self.next_max_log[i]
-            targets.append(target)
+            if i > 0:
+                target = self.QValues_log[i]
+                self.QValues_log[i][self.action_log[i]] += (reward *self.discount **i) + self.gamma *self.QValues_log[i - 1][self.action_log[i - 1]]
+                targets.append(target)
         
-        return targets
+        return self.QValues_log
 
     def update_values(self, reward):
-        if self.random_move_prob > 1.5:
-                self.random_move_prob *= self.random_move_decrease
-        self.next_max_log.append(reward)
+        
+        
+        self.next_max_log.insert(0,reward)
 
         if self.training:
+            self.random_move_prob *= self.random_move_decrease
             self.nn_output = self.calculate_targets(reward)
         
             self.nn_input = np.array([x for x in self.board_states_log]).reshape(-1,42,1)
