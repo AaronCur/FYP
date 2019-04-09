@@ -24,8 +24,8 @@ import pygame
 
 def main():
 
-    SQUARESIZE = 100
-    RADIUS = int(SQUARESIZE/2 - 5)
+    SQUARESIZE = 125
+    RADIUS = int(SQUARESIZE/2 -6)
     ROW_COUNT = 6
     COLUMN_COUNT = 7
     game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)

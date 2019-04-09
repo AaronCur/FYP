@@ -23,7 +23,10 @@ class DeepQAgent:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 27
-        self.description = "Deep Q Agent"
+        if training == False:
+            self.description = "Trained Deep Q Agent"
+        else:
+            self.description = "Training Deep Q Agent"
         self.nn_model = self.init_model()
         self.action_log = []
         self.discount = 0.8
