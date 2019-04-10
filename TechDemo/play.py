@@ -59,10 +59,21 @@ def main():
     #player2 = AnnAgent2(game)
     #player2 = AnnAgent3(game)
     #player2 = AnnAgent4(game)
+    player1Array = []
+    player1Array.append(RandomAgent())
+    player1Array.append(MiniMaxAgent(game))
+    player2Array = []
+    player2Array.append(RandomAgent())
     
     
     
-    env.play(player1,player2)
+    game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
+    env = Connect4Env(SQUARESIZE, ROW_COUNT, COLUMN_COUNT, game)
+    #player1 = RandomAgent()
+    #player2 = RandomAgent()
+    env.play(player1Array[1], player2Array[0])
+
+   
 
     input()
 

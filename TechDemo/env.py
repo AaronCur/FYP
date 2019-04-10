@@ -251,8 +251,9 @@ class Connect4Env:
         ax = fig.gca()
         ax.set_xlabel("Games Played")
         ax.set_ylabel("Winning Rate %")
-        ax.set_xlim([0,1000])
-        ax.set_ylim([0, 100])
+        ax.set_ylim([-2,102])
+        ax.set_xlim([-10, 1010])
+        ax.set_ymargin(0.1)
 
         
         ax.plot(self.game_number,self.drawn_games,'b-', label="Draws " + ": " + str(round(drawsAvg,2)) + "%" )
@@ -262,6 +263,10 @@ class Connect4Env:
         
         
         ax.set_title(str(player1.description)+' vs ' + str(player2.description))
+        ax.grid(True)
+
+
+        ax.margins(10)
         
       
         ax.legend()
