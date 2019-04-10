@@ -39,7 +39,7 @@ def main():
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
 
-    Training = False
+    Training = True
     #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
@@ -60,10 +60,9 @@ def main():
     #player2 = AnnAgent3(game)
     #player2 = AnnAgent4(game)
     player1Array = []
-    player1Array.append(RandomAgent())
-    player1Array.append(MiniMaxAgent(game))
+    player1Array.append(QAgent(game,Training))
     player2Array = []
-    player2Array.append(RandomAgent())
+    player2Array.append(MiniMaxAgent(game))
     
     
     
@@ -71,7 +70,7 @@ def main():
     env = Connect4Env(SQUARESIZE, ROW_COUNT, COLUMN_COUNT, game)
     #player1 = RandomAgent()
     #player2 = RandomAgent()
-    env.play(player1Array[1], player2Array[0])
+    env.play(player1Array[0], player2Array[0])
 
    
 

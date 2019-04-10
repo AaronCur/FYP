@@ -609,7 +609,7 @@ class Connect4Env:
                                         player2.update_values(100)
                                         player2.train()
                                     elif player1.getTag() == "Q":
-                                        player1.update_values(100)
+                                        player1.update_values(-100)
                                         player1.train()
                                  
 

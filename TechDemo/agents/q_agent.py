@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference_3.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -75,7 +75,6 @@ class QAgent:
             
             #self.random_move_prob *= self.random_move_decrease
             #self.nn_model = self.train_model(self.training_data, self.nn_model)
-            self.random_move_prob *= self.random_move_decrease
         else:
             pass
 
@@ -143,22 +142,15 @@ class QAgent:
             #Add to the start of the list, more recent actions are first in the lsit, makes it easier 
             #to distribute award back through previous moves 
             #Instead of having to reverse the list later if i used .append
-    
+
             self.board_states.insert(0,
-                [self.add_action_to_observation(prev_observation, action),0])
+                                     [self.add_action_to_observation(prev_observation, action), 0])
 
             if 1 in otherboardwins:
-             
-                self.training_data.append(
-                [self.add_action_to_observation(prev_observation, action),-175])
+                self.update_values(-75)
 
             ##If a winning move was blocked
-            elif boardwins != otherboardwins:
-                self.training_data.append(
-                [self.add_action_to_observation(prev_observation, action),175])
-
-            else:
-                self.board_states.insert(0,
-                [self.add_action_to_observation(prev_observation, action),0])
+            if boardwins != otherboardwins:
+                self.update_values(50)
 
         return action
