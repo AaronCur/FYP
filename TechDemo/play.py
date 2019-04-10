@@ -39,7 +39,7 @@ def main():
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
 
-    Training = True
+    Training = False
     #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
@@ -62,7 +62,7 @@ def main():
     player1Array = []
     player1Array.append(QAgent(game,Training))
     player2Array = []
-    player2Array.append(MiniMaxAgent(game))
+    player2Array.append(RandomAgent())
     
     
     
