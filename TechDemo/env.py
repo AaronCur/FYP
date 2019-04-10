@@ -241,31 +241,60 @@ class Connect4Env:
         #pygame.display.update()
         #plt.show(block = False)
 
-        
-
-        fig = pylab.figure(figsize=[8, 4], # Inches
+        matplotlib.use("Agg")
+        fig = pylab.figure(figsize=[8, 4],  # Inches
                    dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
                    )
         ax = fig.gca()
         ax.set_xlabel("Games Played")
         ax.set_ylabel("Winning Rate %")
-        
-        if len(self.drawn_games) != 0:
-            ax.plot(self.game_number,self.drawn_games,'b-', label="Draws" + ": " + str(round(drawsAvg,2)) + "%" )
-        #if len(self.game_number) > 0:
-        ax.plot(self.game_number,self.player2_wins, self.YELLOW, label=player2.getTag() + ": " + str(round(player2Avg,2)) + "%" )
-        ax.plot(self.game_number,self.player1_wins,self.RED, label=player1.getTag() + ": " + str(round(player1Avg,2)) + "%" )
-        ax.set_title(str(player1.description)+' vs ' + str(player2.description))
-        ax.legend()
+        ax.set_xlim([0,1000])
+        ax.set_ylim([0, 100])
 
+        
+        ax.plot(self.game_number,self.drawn_games,'b-', label="Draws " + ": " + str(round(drawsAvg,2)) + "%" )
+        ax.plot(self.game_number, self.player2_wins, 'y-',
+                label=player2.getTag() + ": " + str(round(player2Avg, 2)) + "%")
+        ax.plot(self.game_number,self.player1_wins,'r-', label=player1.getTag()+ ": " + str(round(player1Avg,2)) + "%" )
+        
+        
+        ax.set_title(str(player1.description)+' vs ' + str(player2.description))
+        
+      
+        ax.legend()
         canvas = agg.FigureCanvasAgg(fig)
         canvas.draw()
         renderer = canvas.get_renderer()
         raw_data = renderer.tostring_rgb()
         size = canvas.get_width_height()
         self.graph_surf = pygame.image.fromstring(raw_data, size, "RGB")
-        
-        
+
+    def final_graph(self,player1, player2):
+        matplotlib.use("TkAgg")
+        drawsAvg = self.calc_avg(self.drawn_games)
+        player1Avg = self.calc_avg(self.player1_wins)
+        player2Avg = self.calc_avg(self.player2_wins)
+        plt.figure()
+        plt.xlim([-10, 1010])
+        plt.ylim([-10, 110])
+
+        plt.xlabel('Games Played')
+        plt.ylabel('Winning Rate %')
+        drawsAvg = self.calc_avg(self.drawn_games)
+
+        plt.plot(self.game_number, self.drawn_games, 'b-',
+                 label="Draws" + ": " + str(drawsAvg) + "%")
+
+        plt.plot(self.game_number, self.player2_wins, 'y-',
+                 label=player2.getTag() + ": " + str(player2Avg) + "%")
+        plt.plot(self.game_number, self.player1_wins, 'r-',
+                 label=player1.getTag() + ": " + str(player1Avg) + "%")
+        plt.title(str(player1.description) +
+                  ' vs ' + str(player2.description))
+
+        plt.legend()
+        plt.show()
+
     def win_percentage(self,wins, games):
         percentage = 100 * float(wins) / float(games)
         self.win_his.append(percentage)
@@ -287,17 +316,28 @@ class Connect4Env:
                 self.turn = self.startTurn
                 
                 self.gameNumber+=1
-                
-                
-                
+            
                 self.game_over = False
             
                 self.board = self.game.create_board()
                 print("episode "+ str(i))
                 
                 #self.display_stats(player1,player2)
-                if i == 0 and self.gameNumber > 9:
-                        self.plot_history(player1,player2)
+                if i == 0:
+                    self.plot_history(player1,player2)
+                
+                self.screen.fill(self.BG)
+                numGames = myfont.render(
+                "Game: " + str(self.gameNumber), 1, self.RED)
+                self.screen.blit(numGames, (40, 10))
+
+                self.draw_board(self.board, self.screen, pygame)
+                self.display_stats(player1,player2)
+                
+                self.screen.blit(self.graph_surf, ((self.screen.get_rect().width / 4) * 3 - 400,500))
+                self.display_screen.blit(pygame.transform.scale(self.screen, self.size), (0,0))
+                pygame.display.flip()
+
                 
             
                 while not self.game_over:
@@ -306,25 +346,14 @@ class Connect4Env:
                                 sys.exit()
                         if event.type == pygame.VIDEORESIZE:
                             pass
-                            size = event.dict['size']
-                            self.display_screen = pygame.display.set_mode(size,RESIZABLE)
+                            self.size = event.dict['size']
+                            self.display_screen = pygame.display.set_mode(self.size,RESIZABLE)
                             # On the next line, if only part of the window
                             # needs to be copied, there's some other options.
                             #urface.blit(old_surface_saved, (0,0))
                             #del old_surface_saved
 
-                    self.screen.fill(self.BG)
-                    numGames = myfont.render(
-                    "Game: " + str(self.gameNumber), 1, self.RED)
-                    self.screen.blit(numGames, (40, 10))
-
-                    self.draw_board(self.board, self.screen, pygame)
-                    self.display_stats(player1,player2)
-                    if self.gameNumber > 10:
-                        self.screen.blit(self.graph_surf, ((self.screen.get_rect().width / 4) * 3 - 400,500))
-                    self.display_screen.blit(pygame.transform.scale(self.screen, size), (0,0))
-                    pygame.display.flip()
-
+                   
                     
                     if self.turn == self.PLAYER1 and not self.game_over:
                         if(player1.getTag() == "Human"):
@@ -404,7 +433,7 @@ class Connect4Env:
                                
                                 self.draw_board(self.board, self.screen, pygame)
                               
-                                #pygame.display.flip()
+                                pygame.display.update()
                                
 
                                 self.turn += 1
@@ -511,7 +540,7 @@ class Connect4Env:
                               
                                 self.draw_board(self.board, self.screen, pygame)
                                 
-                               # pygame.display.flip()
+                                pygame.display.update()
                                
 
                                 self.turn += 1
@@ -562,10 +591,12 @@ class Connect4Env:
             percentage = self.win_percentage(draws, self.games)
             self.drawn_games.append(percentage)
             self.game_number.append(self.gameNumber)
-            
-
-            
-
+        #self.final_graph(player1,player2)
+        threading.Thread(target=self.final_graph,
+                        args=(player1, player2)
+                       ).start()
+        print("reached")
+        pygame.time.wait(1000)
         if player1.description == "ANNeGreedy trained with random moves":
             player1.train_model()
 
