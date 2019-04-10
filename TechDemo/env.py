@@ -66,6 +66,8 @@ class Connect4Env:
         self.totalPlayer2wins = 0
         self.myfont = pygame.font.SysFont("monospace", 60)
 
+        self.wait_time = 0
+
     ##def reset(self):
         ##self.board = TicTacToeBoard()
 
@@ -285,9 +287,9 @@ class Connect4Env:
         plt.plot(self.game_number, self.drawn_games, 'b-',
                  label="Draws" + ": " + str(drawsAvg) + "%")
 
-        plt.plot(self.game_number, self.player2_wins, 'y-',
+        plt.plot(self.game_number, self.player2_wins, 'r-',
                  label=player2.getTag() + ": " + str(player2Avg) + "%")
-        plt.plot(self.game_number, self.player1_wins, 'r-',
+        plt.plot(self.game_number, self.player1_wins, 'g-',
                  label=player1.getTag() + ": " + str(player1Avg) + "%")
         plt.title(str(player1.description) +
                   ' vs ' + str(player2.description))
@@ -345,16 +347,34 @@ class Connect4Env:
                         if event.type == pygame.QUIT:
                                 sys.exit()
                         if event.type == pygame.VIDEORESIZE:
-                            pass
                             self.size = event.dict['size']
                             self.display_screen = pygame.display.set_mode(self.size,RESIZABLE)
                             # On the next line, if only part of the window
                             # needs to be copied, there's some other options.
                             #urface.blit(old_surface_saved, (0,0))
                             #del old_surface_saved
-
-                   
-                    
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_0:
+                                self.wait_time = 450
+                            if event.key == pygame.K_1:
+                                self.wait_time = 400
+                            if event.key == pygame.K_2:
+                                self.wait_time = 350
+                            if event.key == pygame.K_3:
+                                self.wait_time = 300
+                            if event.key == pygame.K_4:
+                                self.wait_time = 250
+                            if event.key == pygame.K_5:
+                                self.wait_time = 200
+                            if event.key == pygame.K_6:
+                                self.wait_time = 150
+                            if event.key == pygame.K_7:
+                                self.wait_time = 100
+                            if event.key == pygame.K_8:
+                                self.wait_time = 50
+                            if event.key == pygame.K_9:
+                                self.wait_time = 0
+                                
                     if self.turn == self.PLAYER1 and not self.game_over:
                         if(player1.getTag() == "Human"):
 
@@ -438,7 +458,7 @@ class Connect4Env:
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
-                                #pygame.time.wait(250)
+                                pygame.time.wait(self.wait_time)
 
                                 if self.game.winning_move(self.board, self.PLAYER1_PIECE):
                                     label = myfont.render(
@@ -545,7 +565,7 @@ class Connect4Env:
 
                                 self.turn += 1
                                 self.turn = self.turn % 2
-                                #pygame.time.wait(250)
+                                pygame.time.wait(self.wait_time)
 
                                 if self.game.winning_move(self.board, self.PLAYER2_PIECE):
 
