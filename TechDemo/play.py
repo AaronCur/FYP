@@ -64,6 +64,9 @@ def main():
     
     env.play(player1,player2)
 
+    input()
+
+
 
 
 if __name__ == "__main__":

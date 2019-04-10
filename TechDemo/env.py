@@ -67,6 +67,7 @@ class Connect4Env:
         self.myfont = pygame.font.SysFont("monospace", 60)
 
         self.wait_time = 0
+        self.paused = False
 
     ##def reset(self):
         ##self.board = TicTacToeBoard()
@@ -305,6 +306,7 @@ class Connect4Env:
     def play(self,player1, player2):
         self.gameNumber = 0
         myfont = pygame.font.SysFont("monospace", 75)
+        legendfont = pygame.font.SysFont("monospace", 40)
        
         
         for i in range(self.battles):
@@ -331,7 +333,20 @@ class Connect4Env:
                 self.screen.fill(self.BG)
                 numGames = myfont.render(
                 "Game: " + str(self.gameNumber), 1, self.RED)
+
+                inputs = legendfont.render(
+                    "Keyboard Inputs: ", 1, self.STATS)
+
+                playback = legendfont.render(
+                    "1-9 -> PlayBack speed", 1, self.STATS)
+
+                pause = legendfont.render(
+                    "0 -> Pause", 1, self.STATS)
+
                 self.screen.blit(numGames, (40, 10))
+                self.screen.blit(inputs, (10, 875))
+                self.screen.blit(playback, (10, 925))
+                self.screen.blit(pause, (10, 975))
 
                 self.draw_board(self.board, self.screen, pygame)
                 self.display_stats(player1,player2)
@@ -345,7 +360,7 @@ class Connect4Env:
                 while not self.game_over:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
-                                sys.exit()
+                                pygame.quit()
                         if event.type == pygame.VIDEORESIZE:
                             self.size = event.dict['size']
                             self.display_screen = pygame.display.set_mode(self.size,RESIZABLE)
@@ -354,28 +369,32 @@ class Connect4Env:
                             #urface.blit(old_surface_saved, (0,0))
                             #del old_surface_saved
                         if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_0:
+                            if event.key == pygame.K_0 or event.key == pygame.K_KP0:
+                                self.wait_time = "Paused"
+                                self.paused = True
+                            if event.key == pygame.K_1 or event.key == pygame.K_KP1:
                                 self.wait_time = 450
-                            if event.key == pygame.K_1:
-                                self.wait_time = 400
-                            if event.key == pygame.K_2:
-                                self.wait_time = 350
-                            if event.key == pygame.K_3:
-                                self.wait_time = 300
-                            if event.key == pygame.K_4:
-                                self.wait_time = 250
-                            if event.key == pygame.K_5:
-                                self.wait_time = 200
-                            if event.key == pygame.K_6:
-                                self.wait_time = 150
-                            if event.key == pygame.K_7:
+                            if event.key == pygame.K_2 or event.key == pygame.K_KP2:
+                                self.wait_time = 375
+                            if event.key == pygame.K_3 or event.key == pygame.K_KP3:
+                                self.wait_time = 325
+                            if event.key == pygame.K_4 or event.key == pygame.K_KP4:
+                                self.wait_time = 275
+                            if event.key == pygame.K_5 or event.key == pygame.K_KP5:
+                                self.wait_time = 215
+                            if event.key == pygame.K_6 or event.key == pygame.K_KP6:
+                                self.wait_time = 160
+                            if event.key == pygame.K_7 or event.key == pygame.K_KP7:
                                 self.wait_time = 100
-                            if event.key == pygame.K_8:
+                            if event.key == pygame.K_8 or event.key == pygame.K_KP8:
                                 self.wait_time = 50
-                            if event.key == pygame.K_9:
+                            if event.key == pygame.K_9 or event.key == pygame.K_KP9:
                                 self.wait_time = 0
-                                
-                    if self.turn == self.PLAYER1 and not self.game_over:
+
+                    if self.wait_time != "Paused":
+                        self.paused = False
+
+                    if self.turn == self.PLAYER1 and not self.game_over and self.paused == False:
                         if(player1.getTag() == "Human"):
 
 
@@ -487,7 +506,7 @@ class Connect4Env:
 
 
                     # # Ask for Player 2 Input
-                    if self.turn == self.PLAYER2 and not self.game_over:
+                    if self.turn == self.PLAYER2 and not self.game_over and self.paused == False:
                         if(player2.getTag() == "Human"):
                             if event.type == pygame.MOUSEMOTION:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
