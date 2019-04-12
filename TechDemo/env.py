@@ -49,7 +49,6 @@ class Connect4Env:
         self.YELLOW = (250,232,46)
         self.STATS = (127,127,127)
 
-        self.win_his =[]
         self.player1_wins = []
         self.player2_wins = []
         self.drawn_games = []
@@ -83,7 +82,6 @@ class Connect4Env:
     #total number of games played
     def win_percentage(self, wins, games):
         percentage = 100 * float(wins) / float(games)
-        self.win_his.append(percentage)
         return percentage
     
     #Handles the drawing of the board state to the screen using pygame
@@ -348,17 +346,18 @@ class Connect4Env:
                     #Pauses the game
                     if self.wait_time != "Paused":
                         self.paused = False
-
+                    
+                    #Get player 1 input
                     if self.turn == self.PLAYER1 and not self.game_over and self.paused == False:
                         if(player1.getTag() == "Human"):
 
                             if event.type == pygame.MOUSEMOTION:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
+                                #gets mouse x position
                                 posx = event.pos[0]
                                 
                                 #Draws piece above the board so the player can move it into their desired column before dropping the piece
-                                if self.turn == self.PLAYER1:
-                                    pygame.draw.circle(self.screen, self.RED, (posx, int(self.SQUARESIZE/2)), self.RADIUS)
+                                pygame.draw.circle(self.screen, self.RED, (posx, int(self.SQUARESIZE/2)), self.RADIUS)
                             
                             pygame.display.update()
 
@@ -418,7 +417,7 @@ class Connect4Env:
                                 col = player1.makeMove(self.board,self.PLAYER1_PIECE)
                             #col = pick_best_move(board, AI_PIECE)
                             #col, minimax_score = minimax(board, 5, -math.inf, math.inf, True)
-
+                             #If the column selected is a valid location, find the next available row and drop the piece here
                             if self.game.is_valid_location(self.board, col):
                                 row = self.game.get_next_open_row(self.board, col)
                                 self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
@@ -431,7 +430,7 @@ class Connect4Env:
                                 self.turn = self.turn % 2
                                 #Pauses pygame window for time specified by player input keys 1-9
                                 pygame.time.wait(self.wait_time)
-
+                                #If the move made was a winning move train the other player if its an ANN, incredment player 1 wins for that battle aswell as total wins
                                 if self.game.winning_move(self.board, self.PLAYER1_PIECE):
                                     label = myfont.render(
                                         str(tag) + " wins!!", 1, self.RED)
@@ -456,28 +455,28 @@ class Connect4Env:
                                     else:
                                         self.startTurn = 0
                                         
-                    # # Ask for Player 2 Input
+                    #Get Player 2 Input
                     if self.turn == self.PLAYER2 and not self.game_over and self.paused == False:
                         if(player2.getTag() == "Human"):
                             if event.type == pygame.MOUSEMOTION:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
+                                #gets mouse x position 
                                 posx = event.pos[0]
-                                
-                                if self.turn == self.PLAYER2:
-                                    pygame.draw.circle(self.screen, self.YELLOW, (posx, int(self.SQUARESIZE/2)), self.RADIUS)
+                                #Draws piece above the board so the player can move it into their desired column before dropping the piece
+                                pygame.draw.circle(self.screen, self.YELLOW, (posx, int(self.SQUARESIZE/2)), self.RADIUS)
                             
                             pygame.display.update()
 
                             if event.type == pygame.MOUSEBUTTONDOWN:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
-                                #print(event.pos)
-                                # Ask for Player 2 Input
+                            
                                 col = player2.makeMove(event, self.SQUARESIZE)
-
+                                #If the column selected is a valid location, find the next available row and drop the piece here
                                 if self.game.is_valid_location(self.board, col):
                                     row = self.game.get_next_open_row(self.board, col)
                                     self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
-
+                                    #If the move made was a winning move train the other player if its an ANN, incredment player 2 wins for that battle aswell as total wins
+                                    #If the player that won was an ANN train it
                                     if self.game.winning_move(self.board, self.PLAYER2_PIECE):
                                         label = myfont.render("Human 2 wins!!", 1, self.YELLOW)
                                         self.screen.blit(label, (40,10))
@@ -486,7 +485,10 @@ class Connect4Env:
                                         self.totalPlayer2wins= self.player2_wins + 1
                                         if (player1.getTag() == "Ann"):
                                             player1.train(-100)
-
+                                        elif player1.getTag() == "Q":
+                                            player1.update_values(-100)
+                                            player1.train()
+                                    #Switches to the other players turn
                                     self.turn += 1
                                     self.turn = self.turn % 2
 
@@ -496,6 +498,7 @@ class Connect4Env:
                                     pygame.display.update()
                                     pygame.time.wait(250)
                         else:
+                            #If the player isnt a human, check its tag to make the correct make move call
                             tag = player2.getTag()
 
                             if tag == "Random":
@@ -517,6 +520,7 @@ class Connect4Env:
                             elif tag == "Ann":
                                 col = player2.makeMove(self.board, self.PLAYER2_PIECE)
 
+                             #If the column selected is a valid location, find the next available row and drop the piece here
                             if self.game.is_valid_location(self.board, col):
                                 row = self.game.get_next_open_row(self.board, col)
                                 self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
@@ -527,8 +531,11 @@ class Connect4Env:
                                
                                 self.turn += 1
                                 self.turn = self.turn % 2
+                                #Pauses pygame window for time specified by player input keys 1-9
                                 pygame.time.wait(self.wait_time)
 
+                                #If the move made was a winning move train the other player if its an ANN, incredment player 2 wins for that battle aswell as total wins
+                                #If the player that won was an ANN train it
                                 if self.game.winning_move(self.board, self.PLAYER2_PIECE):
 
                                     label = myfont.render(
