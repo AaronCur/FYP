@@ -15,7 +15,6 @@ class DeepQAgent:
         self.filename = filename
         self.tag = "Q"
         self.game = game
-
         self.training_data = []
         self.board_states = []
         self.wins = 0
@@ -145,10 +144,6 @@ class DeepQAgent:
 
             action = np.argmax(np.array(predictions))
 
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
         if self.training == True:
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)

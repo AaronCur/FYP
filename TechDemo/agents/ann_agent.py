@@ -9,10 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class AnnAgent:
-    def __init__(self, game, initial_games = 100, test_games = 100, goal_steps = 100, lr = 1e-2, filename = 'ann_agent_minimax2.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+    def __init__(self, game, lr = 1e-2, filename = 'ann_agent_minimax2.tflearn'):
         self.lr = lr
         self.filename = filename
         self.tag = "Ann"
@@ -23,6 +20,9 @@ class AnnAgent:
         self.wins = 0
 
     def getTag(self):
+        return self.tag
+
+    def getDescription(self):
         return self.tag
 
     def generate_observation(self, board):
@@ -63,11 +63,6 @@ class AnnAgent:
         return model 
     
     def makeMove(self, board, piece):
-        if piece == 1:
-            otherPiece = 2
-        else:
-            otherPiece = 1
-
         prev_observation = self.generate_observation(board)
         predictions = []
 
@@ -76,40 +71,7 @@ class AnnAgent:
             if self.game.is_valid_location(board, action) == False:
                predictions[action] = -100000
            
-                
-
         action = np.argmax(np.array(predictions))
-
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
-        #boardCopy = board.copy()
-            #row = self.game.get_next_open_row(boardCopy, action)
-            #self.game.drop_piece(boardCopy, row, action,piece)
-            #score = self.game.score_position(boardCopy,piece)
-
-        ##If there was an oportunity to block the other player 
-       
         self.board_states.append([self.add_action_to_observation(prev_observation, action)])
            
-        
-           
         return action
-       # else:
-           # boardCopy = board.copy()
-           # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-            #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
-            #self.makeMove(board, piece)
-           # action = random.randint(0, 6)
-
-           # while self.game.is_valid_location(board, action) == False:
-              #  action = random.randint(0, 6)
-           # self.training_data.append(
-                    #[self.add_action_to_observation(prev_observation, action), -10000])
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
-           # return action
-
-        
-

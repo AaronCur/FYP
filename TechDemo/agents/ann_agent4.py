@@ -27,6 +27,9 @@ class AnnAgent4:
     def getTag(self):
         return self.tag
 
+    def getDescription(self):
+        return self.tag
+
     def generate_observation(self, board):
         #Flatten board array
         flattened = np.array(board).reshape(-1, 42, 1)
@@ -82,19 +85,10 @@ class AnnAgent4:
 
         action = np.argmax(np.array(predictions))
 
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
         boardCopy = board.copy()
         row = self.game.get_next_open_row(boardCopy, action)
         self.game.drop_piece(boardCopy, row, action, piece)
         score = self.game.score_position(boardCopy, piece)
-
-        ##If there was an oportunity to block the other player
-       # if self.game.can_win(boardCopy, otherPiece):
-        #    self.training_data.append(
-         #       [self.add_action_to_observation(prev_observation, action), -0.75])
 
         ##If a winning move was blocked
         if self.game.can_win(board, otherPiece) == True and self.game.can_win(boardCopy, otherPiece) == False:
@@ -104,20 +98,5 @@ class AnnAgent4:
         else:
             self.board_states.append(
                 [self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append(
-        #   [self.add_action_to_observation(prev_observation, action), 1])
-        return action
-       # else:
-        # boardCopy = board.copy()
-        # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        #self.makeMove(board, piece)
-        # action = random.randint(0, 6)
 
-        # while self.game.is_valid_location(board, action) == False:
-        #  action = random.randint(0, 6)
-        # self.training_data.append(
-        #[self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        # return action
+        return action

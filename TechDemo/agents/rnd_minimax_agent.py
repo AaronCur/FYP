@@ -50,6 +50,8 @@ class RndMiniMaxAgent():
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break
+
+            
             #Format best moves array
             best_moves = tuple(best_moves)
             #Get a random best move
@@ -87,3 +89,6 @@ class RndMiniMaxAgent():
 
     def getTag(self):
         return self.tag
+
+    def getDescription(self):
+        return self.description

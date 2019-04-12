@@ -11,10 +11,7 @@ from collections import Counter
 
 
 class AnnAgentBasic:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/250/ann_agent_basic_minimax_250.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+    def __init__(self, game, training, lr=1e-2, filename='agents/models/egreedy/250/ann_agent_basic_minimax_250.tflearn'):
         self.lr = lr
         self.filename = filename
         self.tag = "Ann"
@@ -52,7 +49,6 @@ class AnnAgentBasic:
     def train(self, reward):
 
         if self.training == True:
-
             for val in self.board_states:
                 val.append(reward)
                 self.training_data.append(
@@ -81,7 +77,6 @@ class AnnAgentBasic:
         return model
 
     def makeMove(self, board, piece):
-        
         prev_observation = self.generate_observation(board)
         predictions = []
 

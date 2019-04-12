@@ -10,10 +10,7 @@ from collections import Counter
 
 
 class AnnAgent2:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent2_minimax.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+    def __init__(self, game, lr=1e-2, filename='ann_agent2_minimax.tflearn'):
         self.lr = lr
         self.filename = filename
         self.tag = "Ann"
@@ -24,6 +21,9 @@ class AnnAgent2:
         self.wins = 0
 
     def getTag(self):
+        return self.tag
+
+    def getDescription(self):
         return self.tag
 
     def generate_observation(self, board):

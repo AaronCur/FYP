@@ -10,10 +10,7 @@ from collections import Counter
 
 
 class AnnAgent3:
-    def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent3_minimax.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+    def __init__(self, game, lr=1e-2, filename='ann_agent3_minimax.tflearn'):
         self.lr = lr
         self.filename = filename
         self.tag = "Ann"
@@ -24,6 +21,9 @@ class AnnAgent3:
         self.wins = 0
 
     def getTag(self):
+        return self.tag
+
+    def getDescription(self):
         return self.tag
 
     def generate_observation(self, board):
@@ -81,10 +81,6 @@ class AnnAgent3:
 
         action = np.argmax(np.array(predictions))
 
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
         boardCopy = board.copy()
         row = self.game.get_next_open_row(boardCopy, action)
         self.game.drop_piece(boardCopy, row, action, piece)
@@ -99,20 +95,5 @@ class AnnAgent3:
         else:
             self.board_states.append(
                 [self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append(
-        #   [self.add_action_to_observation(prev_observation, action), 1])
-        return action
-       # else:
-        # boardCopy = board.copy()
-        # self.board_states.append([self.add_action_to_observation(prev_observation, action)])
-        #self.training_data.append([self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        #self.makeMove(board, piece)
-        # action = random.randint(0, 6)
 
-        # while self.game.is_valid_location(board, action) == False:
-        #  action = random.randint(0, 6)
-        # self.training_data.append(
-        #[self.add_action_to_observation(prev_observation, action), -10000])
-        #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        # return action
+        return action

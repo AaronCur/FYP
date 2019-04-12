@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference_SGD.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference_3.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -30,6 +30,9 @@ class QAgent:
 
     def getTag(self):
         return self.tag
+    
+    def getDescription(self):
+        return self.description
 
     def generate_observation(self, board):
         #Flatten board array

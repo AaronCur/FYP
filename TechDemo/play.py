@@ -39,13 +39,13 @@ def main():
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
 
-    Training = True
+    Training = False
     #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
-    #player1 = AnnAgentRandom(game, Training)
-    player1 = QAgent(game, Training)
+    player1 = AnnAgentRandom(game, Training)
+    #player1 = QAgent(game, Training)
     #player1 = DeepQAgent(game, Training)
 
     #player2 = HumanAgent()
@@ -54,7 +54,7 @@ def main():
     
     player2 = MiniMaxAgent(game)
     #player2 = MiniMax2Agent(game)
-    #player2 = RndMiniMaxAgent(game)
+    player2 = RndMiniMaxAgent(game)
     #player2 = AnnAgent(game)
     #player2 = AnnAgent2(game)
     #player2 = AnnAgent3(game)

@@ -11,10 +11,7 @@ from collections import Counter
 
 
 class AnnAgentMoreRewards:
-    def __init__(self, game, training, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='agents/models/egreedy/250/ann_agent_more_rewards_minimax_250.tflearn'):
-        self.initial_games = initial_games
-        self.test_games = test_games
-        self.goal_steps = goal_steps
+    def __init__(self, game, training, lr=1e-2, filename='agents/models/egreedy/250/ann_agent_more_rewards_minimax_250.tflearn'):
         self.lr = lr
         self.filename = filename
         self.tag = "Ann"
@@ -50,9 +47,7 @@ class AnnAgentMoreRewards:
         return nn_model
 
     def train(self, reward):
-
         if self.training == True:
-
             for val in self.board_states:
                 val.append(reward)
                 self.training_data.append(
@@ -89,7 +84,6 @@ class AnnAgentMoreRewards:
         prev_observation = self.generate_observation(board)
         predictions = []
 
-      
         for action in range(0, 7):
             predictions.append(self.nn_model.predict(
                 self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
@@ -98,7 +92,6 @@ class AnnAgentMoreRewards:
 
         action = np.argmax(np.array(predictions))
 
-    
         if self.training == True:
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)

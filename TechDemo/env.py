@@ -6,7 +6,6 @@ from pygame.locals import *
 import math
 import random
 import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.backends.backend_agg as agg
 import pylab
@@ -69,28 +68,49 @@ class Connect4Env:
         self.wait_time = 0
         self.paused = False
 
+    #Output the current board state to the console
     def print_board(self,board):
             print(np.flip(board, 0))
-  
+
+    #Calculates the avg of values in a list
+    def calc_avg(self, wins):
+        if wins == []:
+            return 0
+        else:
+            return sum(wins) / len(wins)
+
+    #Calculates average win percentage by passing in how many wins the player has and the
+    #total number of games played
+    def win_percentage(self, wins, games):
+        percentage = 100 * float(wins) / float(games)
+        self.win_his.append(percentage)
+        return percentage
+    
+    #Handles the drawing of the board state to the screen using pygame
+    #Along with the board outline itself
     def draw_board(self,board, screen, pygame):
         
+        #Draws a blank connect 4 board 
         for c in range(self.COLUMN_COUNT):
             for r in range(self.ROW_COUNT):
+                #First draws rectangles the colour of the board and overlays with a circle the same colour of the 
+                #background to make it look like an empty board
                 pygame.draw.rect(screen, self.BOARD, (c*self.SQUARESIZE, r*self.SQUARESIZE+self.SQUARESIZE , self.SQUARESIZE, self.SQUARESIZE))
                 pygame.draw.circle(screen, self.BG, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), int(r*self.SQUARESIZE+self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
 
+        #Loops through each position of the board.
+        #If the board state for that position contains a player 1 or player 2 piece its drawn over the empty position
         for c in range(self.COLUMN_COUNT):
             for r in range(self.ROW_COUNT):
                 if board[r][c] == 1:
                     pygame.draw.circle(screen, self.RED, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
                 elif board[r][c] == 2:
                     pygame.draw.circle(screen, self.YELLOW, (int(c*self.SQUARESIZE+self.SQUARESIZE/2), self.HEIGHT-int(r*self.SQUARESIZE+self.SQUARESIZE/2)), self.RADIUS)
-        
-        #pygame.display.update()
     
+    #Displays the stats as text to the pygame screen for that game sesion for both players
+    #Stats include the player names, avg win rate for the last 10 games,
+    #avg win rate overall, total number of wins
     def display_stats(self, player1, player2):
-        #myfont = pygame.font.SysFont("monospace", 45)
-
         statsPosX = (self.screen.get_rect().width / 4) * 3
 
         agentText = self.myfont.render(
@@ -99,16 +119,15 @@ class Connect4Env:
         agentText.get_rect().width / 2, 100))
         
         agent1 = self.myfont.render(
-                str(player1.description) , 1, self.RED)
+                str(player1.getDescription()) , 1, self.RED)
         self.screen.blit(agent1, (statsPosX- 
         (agentText.get_rect().width / 2) - agent1.get_rect().width, 100))
         
         agent2 = self.myfont.render(
-                 str(player2.description), 1, self.YELLOW)
+                 str(player2.getDescription()), 1, self.YELLOW)
         self.screen.blit(agent2, (statsPosX+ 
         (agentText.get_rect().width / 2) , 100))
         
-
         wins = self.myfont.render(
                 " : Wins : ", 1, self.BOARD)
         self.screen.blit(wins, (statsPosX - 
@@ -125,7 +144,6 @@ class Connect4Env:
         self.screen.blit(player2WinsText, (statsPosX + 
         (wins.get_rect().width / 2) , 200))
         
-
         currentPercent = self.myfont.render(
                 " : Step% : ", 1, self.BOARD)
         self.screen.blit(currentPercent, (statsPosX - 
@@ -140,7 +158,6 @@ class Connect4Env:
             currentP2Percentage = self.player2_wins[-1]
         else:
             currentP2Percentage = 0
-        
         
         player1Percentage = self.myfont.render(
                  str(currentP1Percentage) + "%" , 1, self.STATS)
@@ -166,19 +183,16 @@ class Connect4Env:
                  " " + str(round(self.win_percentage(self.totalPlayer2wins,self.gameNumber),2)) + "%", 1, self.STATS)
         self.screen.blit(player2Overall, (statsPosX + 
         overall.get_rect().width / 2, 400))
-        
 
-    def calc_avg(self, wins):
-        if wins == []:
-            return 0
-        else:
-            return sum(wins) / len(wins) 
-
-
+    #Handles the plotting of a live graph to the pygame screen every 10 games
+    #Plots avg win rate over games played
+    #Avg win rate is calculated after every set of 10 games over a total of 1000 games
+    #This means that there will be 100 data points along the X axis and 10 on the Y
     def plot_history(self, player1, player2):
-        
+        #Changes the matplotlib backend to AGG so that the matplotlib graph can be converted to a canvas,
+        #then to a surface whihc can be displayed in pygame
+        matplotlib.use("Agg")
         drawsAvg = self.calc_avg(self.drawn_games)
-   
         player1Avg = self.calc_avg(self.player1_wins)
         player2Avg = self.calc_avg(self.player2_wins)
        
@@ -193,19 +207,21 @@ class Connect4Env:
         ax.set_xlim([-10, 1010])
         ax.set_ymargin(0.1)
 
-        
+        #Plots the win rate lines for both players along with drawn games%
+        #Also displays the overall avg win rate % in the graph legend
         ax.plot(self.game_number,self.drawn_games,'b-', label="Draws " + ": " + str(round(drawsAvg,2)) + "%" )
         ax.plot(self.game_number, self.player2_wins, 'y-',
                 label=player2.getTag() + ": " + str(round(player2Avg, 2)) + "%")
         ax.plot(self.game_number,self.player1_wins,'r-', label=player1.getTag()+ ": " + str(round(player1Avg,2)) + "%" )
         
-        
-        ax.set_title(str(player1.description)+' vs ' + str(player2.description))
+        #Sets the title of the graph depedning on which agents are playing currently
+        ax.set_title(str(player1.getDescription())+' vs ' + str(player2.getDescription()))
         ax.grid(True)
 
         ax.margins(10)
-        
         ax.legend()
+
+        #Converts matplotlib grpah to a canvas assigning it to a surface which can be displayed in pygame
         canvas = agg.FigureCanvasAgg(fig)
         canvas.draw()
         renderer = canvas.get_renderer()
@@ -214,6 +230,8 @@ class Connect4Env:
         self.graph_surf = pygame.image.fromstring(raw_data, size, "RGB")
 
     def final_graph(self,player1, player2):
+        #Switches matplotlib backend to its default TkAgg so that the final graph is outputted in a seperate
+        #interactive window allowing the user to adjust its size and save as a png
         matplotlib.use("TkAgg")
         drawsAvg = self.calc_avg(self.drawn_games)
         player1Avg = self.calc_avg(self.player1_wins)
@@ -228,28 +246,24 @@ class Connect4Env:
 
         plt.plot(self.game_number, self.drawn_games, 'b-',
                  label="Draws" + ": " + str(drawsAvg) + "%")
-
         plt.plot(self.game_number, self.player2_wins, 'r-',
                  label=player2.getTag() + ": " + str(player2Avg) + "%")
         plt.plot(self.game_number, self.player1_wins, 'g-',
                  label=player1.getTag() + ": " + str(player1Avg) + "%")
-        plt.title(str(player1.description) +
-                  ' vs ' + str(player2.description))
+        plt.title(str(player1.getDescription()) +
+                  ' vs ' + str(player2.getDescription()))
 
         plt.legend()
+        #Displays the final graph in a seperate interactive window
         plt.show()
 
-    def win_percentage(self,wins, games):
-        percentage = 100 * float(wins) / float(games)
-        self.win_his.append(percentage)
-        return percentage
-
+    #Handles the playing of the game player 1 and 2 make moves over 100 battles which consists of 10 games
+    #a total of 1000 games
     def play(self,player1, player2):
         self.gameNumber = 0
         myfont = pygame.font.SysFont("monospace", 75)
         legendfont = pygame.font.SysFont("monospace", 40)
        
-        
         for i in range(self.battles):
             player1wins = 0
             player2wins = 0
@@ -259,19 +273,18 @@ class Connect4Env:
 
                 self.startTurn = 0
                 self.turn = self.startTurn
-                
                 self.gameNumber+=1
-            
                 self.game_over = False
-            
                 self.board = self.game.create_board()
-                print("episode "+ str(i))
                 
-         
+                #if i == 0 it means that the game is at the start of a new battle, the game has either just been
+                #started or 10 games have passed
                 if i == 0:
                     self.plot_history(player1,player2)
                 
+                #Clear the screen with the BG colour
                 self.screen.fill(self.BG)
+                #Create text to be displayed to the screen
                 numGames = myfont.render(
                 "Game: " + str(self.gameNumber), 1, self.RED)
 
@@ -284,30 +297,32 @@ class Connect4Env:
                 pause = legendfont.render(
                     "0 -> Pause", 1, self.STATS)
 
+                #Display text to the screen 
                 self.screen.blit(numGames, (40, 10))
                 self.screen.blit(inputs, (10, 875))
                 self.screen.blit(playback, (10, 925))
                 self.screen.blit(pause, (10, 975))
-
+                #Display board and stats to the screen
                 self.draw_board(self.board, self.screen, pygame)
                 self.display_stats(player1,player2)
-                
+                #Display graph to the screen 
                 self.screen.blit(self.graph_surf, ((self.screen.get_rect().width / 4) * 3 - 400,500))
+                #Scale screen if it has been changed from its starting dimensions of 1920x1080
                 self.display_screen.blit(pygame.transform.scale(self.screen, self.size), (0,0))
+                #Refresh pygame display
                 pygame.display.flip()
-
                 
                 while not self.game_over:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                                 pygame.quit()
                         if event.type == pygame.VIDEORESIZE:
+                            #Handles the resizing of the pygame window
                             self.size = event.dict['size']
                             self.display_screen = pygame.display.set_mode(self.size,RESIZABLE)
-                            # On the next line, if only part of the window
-                            # needs to be copied, there's some other options.
-                            #urface.blit(old_surface_saved, (0,0))
-                            #del old_surface_saved
+                        
+                        #Keys 1-9 change the wait_time value whihc will be used to slow/speed up playback
+                        #Key 0 will pause the game
                         if event.type == pygame.KEYDOWN:
                             if event.key == pygame.K_0 or event.key == pygame.K_KP0:
                                 self.wait_time = "Paused"
@@ -330,18 +345,18 @@ class Connect4Env:
                                 self.wait_time = 50
                             if event.key == pygame.K_9 or event.key == pygame.K_KP9:
                                 self.wait_time = 0
-
+                    #Pauses the game
                     if self.wait_time != "Paused":
                         self.paused = False
 
                     if self.turn == self.PLAYER1 and not self.game_over and self.paused == False:
                         if(player1.getTag() == "Human"):
 
-
                             if event.type == pygame.MOUSEMOTION:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
                                 posx = event.pos[0]
                                 
+                                #Draws piece above the board so the player can move it into their desired column before dropping the piece
                                 if self.turn == self.PLAYER1:
                                     pygame.draw.circle(self.screen, self.RED, (posx, int(self.SQUARESIZE/2)), self.RADIUS)
                             
@@ -349,14 +364,14 @@ class Connect4Env:
 
                             if event.type == pygame.MOUSEBUTTONDOWN:
                                 pygame.draw.rect(self.screen, self.BG, (0,0, self.WIDTH, self.SQUARESIZE))
-                                #print(event.pos)
-                                # Ask for Player 1 Input
+                               
                                 col = player1.makeMove(event, self.SQUARESIZE)
-
+                                #If the column selected is a valid location, find the next available row and drop the piece here
                                 if self.game.is_valid_location(self.board, col):
                                     row = self.game.get_next_open_row(self.board, col)
                                     self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
 
+                                    #If the move made was a winning move train the other player if its an ANN, incredment player 1 wins for that battle aswell as total wins 
                                     if self.game.winning_move(self.board, self.PLAYER1_PIECE):
                                         label = myfont.render("Human 1 wins!!", 1, self.RED)
                                         self.screen.blit(label, (40,10))
@@ -370,17 +385,17 @@ class Connect4Env:
                                             player2.update_values(-100)
                                             player2.train()
 
+                                    #Switches to the other players turn
                                     self.turn += 1
                                     self.turn = self.turn % 2
 
                                     self.print_board(self.board)
-                                   
                                     self.draw_board(self.board, self.screen, pygame)
                                     
                                     pygame.display.update()
-                                    
                                     pygame.time.wait(250)
                         else:
+                            #If the player isnt a human, check its tag to make the correct make move call
                             tag = player1.getTag()
 
                             if tag == "Random":
@@ -409,14 +424,12 @@ class Connect4Env:
                                 self.game.drop_piece(self.board, row, col, self.PLAYER1_PIECE)
 
                                 self.print_board(self.board)
-                               
                                 self.draw_board(self.board, self.screen, pygame)
-                              
                                 pygame.display.update()
                                
-
                                 self.turn += 1
                                 self.turn = self.turn % 2
+                                #Pauses pygame window for time specified by player input keys 1-9
                                 pygame.time.wait(self.wait_time)
 
                                 if self.game.winning_move(self.board, self.PLAYER1_PIECE):
@@ -437,14 +450,12 @@ class Connect4Env:
                                     elif player2.getTag() == "Q":
                                         player2.update_values(-100)
                                         player2.train()
-
+                                    #Sets the start turn for the next game
                                     if self.startTurn == 0:
                                         self.startTurn = 1
                                     else:
                                         self.startTurn = 0
                                         
-
-
                     # # Ask for Player 2 Input
                     if self.turn == self.PLAYER2 and not self.game_over and self.paused == False:
                         if(player2.getTag() == "Human"):
@@ -480,14 +491,10 @@ class Connect4Env:
                                     self.turn = self.turn % 2
 
                                     self.print_board(self.board)
-                                    
                                     self.draw_board(self.board, self.screen, pygame)
                               
                                     pygame.display.update()
-                                   
                                     pygame.time.wait(250)
-
-
                         else:
                             tag = player2.getTag()
 
@@ -514,14 +521,10 @@ class Connect4Env:
                                 row = self.game.get_next_open_row(self.board, col)
                                 self.game.drop_piece(self.board, row, col, self.PLAYER2_PIECE)
 
-                               
                                 self.print_board(self.board)
-                              
                                 self.draw_board(self.board, self.screen, pygame)
-                                
                                 pygame.display.update()
                                
-
                                 self.turn += 1
                                 self.turn = self.turn % 2
                                 pygame.time.wait(self.wait_time)
@@ -547,12 +550,11 @@ class Connect4Env:
                                         player1.update_values(-100)
                                         player1.train()
                                  
-
                                     if self.startTurn == 0:
                                         self.startTurn = 1
                                     else:
                                         self.startTurn = 0
-                    #No empty spaces which means game is drawn
+                    #No empty spaces left in the board means that the game was a draw
                     if 0 not in self.board:
                         self.game_over = True
                         draws = draws + 1
@@ -562,20 +564,23 @@ class Connect4Env:
                         if player2.getTag() == "Q":
                             player2.update_values(50)
                             player2.train()
-                    #if self.game_over:   # pygame.time.wait(3000)
+            #Calculate the average win rate over the previous 10 games
             percentage = self.win_percentage(player1wins,self.games )
             self.player1_wins.append(percentage)
             percentage = self.win_percentage(player2wins, self.games)
             self.player2_wins.append(percentage)
             percentage = self.win_percentage(draws, self.games)
             self.drawn_games.append(percentage)
+            #Append the game number to a list after 10 games,
+            #this helps with mapping win rates to the graph later
             self.game_number.append(self.gameNumber)
-      
+
+        #Producing the final graph caused my pc to slow 
+        #To avoid this i use multithreading to put this process on a seperate thread,
+        #Also avoids the problem of stopping execution of code caused by the output of matplotlib graphs
         threading.Thread(target=self.final_graph,
                         args=(player1, player2)
                        ).start()
-        print("reached")
-        pygame.time.wait(1000)
-        if player1.description == "ANNeGreedy trained with random moves":
+        #For a very specific training case that i was testing 
+        if player1.getDescription() == "ANNeGreedy trained with random moves":
             player1.train_model()
-
