@@ -39,20 +39,20 @@ def main():
     #player1 = AnnAgent2(game)
     #player1 = AnnAgent4(game)
 
-    Training = False
-    player1 = AnnAgent22greedy(game, Training)
+    Training = True
+    #player1 = AnnAgent22greedy(game, Training)
     #player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
     #player1 = AnnAgentRandom(game, Training)
-    #player1 = QAgent(game, Training)
+    player1 = QAgent(game, Training)
     #player1 = DeepQAgent(game, Training)
 
     #player2 = HumanAgent()
     #player2 = RandomAgent()
     #player2 = BestMoveAgent()
     
-    #player2 = MiniMaxAgent(game)
+    player2 = MiniMaxAgent(game)
     #player2 = MiniMax2Agent(game)
     #player2 = RndMiniMaxAgent(game)
     #player2 = AnnAgent(game)
@@ -66,7 +66,7 @@ def main():
     #player2Array.append(RandomAgent())
     
     #player1 = RandomAgent()
-    player2 = RandomAgent()
+    #player2 = RandomAgent()
     env.play(player1, player2)
 
    

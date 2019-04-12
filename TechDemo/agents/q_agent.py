@@ -9,7 +9,7 @@ from statistics import mean
 from collections import Counter
 
 class QAgent:
-    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference_3.tflearn"):
+    def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Q_temporal_difference_5.tflearn"):
         self.lr = lr
         self.filename = filename
         self.tag = "Q"
@@ -79,16 +79,17 @@ class QAgent:
             pass
 
     def train(self):
-        for state in self.board_states:
-            if state[1] == -1000:
-                print("oops")
-            self.training_data.append(state)
-        self.board_states = []
-        X = np.array([i[0] for i in self.training_data]).reshape(-1, 43, 1)
-        y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
-        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
-        self.nn_model.save(self.filename)
-        self.random_move_prob *= self.random_move_decrease
+        if self.training == True:
+            for state in self.board_states:
+                if state[1] == -1000:
+                    print("oops")
+                self.training_data.append(state)
+            self.board_states = []
+            X = np.array([i[0] for i in self.training_data]).reshape(-1, 43, 1)
+            y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
+            self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
+            self.nn_model.save(self.filename)
+            self.random_move_prob *= self.random_move_decrease
 
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')

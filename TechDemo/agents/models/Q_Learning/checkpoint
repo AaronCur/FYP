@@ -1,2 +1,2 @@
-model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\Year4\\FinalYearProject\\FYP\\TechDemo\\agents\\models\\Q_Learning\\Q_temporal_difference_3.tflearn"
-all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\Year4\\FinalYearProject\\FYP\\TechDemo\\agents\\models\\Q_Learning\\Q_temporal_difference_3.tflearn"
+model_checkpoint_path: "c:\\Users\\gameuser\\Documents\\Year4\\FinalYearProject\\FYP\\TechDemo\\agents\\models\\Q_Learning\\Q_temporal_difference_5.tflearn"
+all_model_checkpoint_paths: "c:\\Users\\gameuser\\Documents\\Year4\\FinalYearProject\\FYP\\TechDemo\\agents\\models\\Q_Learning\\Q_temporal_difference_5.tflearn"
