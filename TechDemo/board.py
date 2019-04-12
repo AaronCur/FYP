@@ -16,24 +16,28 @@ class Connect4Board:
         self.EMPTY = 0
         self.WINDOW_LENGTH = 4
         
-
+    #Initalizes board with 0s, creating an empty board
     def create_board(self):
         board = np.zeros((self.ROW_COUNT,self.COLUMN_COUNT))
         return board
 
+    #Modifies board state by adding a value of certain piece to to the board at that row and column
     def drop_piece(self,board, row, col, piece):
         board[row][col] = piece
 
+    #Checks if placing a piece at a certain col is valid
+    #Wont be valid if that column is full
     def is_valid_location(self, board, col):
-        temp = board[self.ROW_COUNT-1][col]
-        
         return board[self.ROW_COUNT-1][col] == 0
 
+    #At a certain column checks which is the next open row
+    #To calculate what row the piece should be placed, at a certain column 
     def get_next_open_row(self,board, col):
         for r in range(self.ROW_COUNT):
             if board[r][col] == 0:
                 return r
 
+    #Checks the board state for wins for whatever piece is passed in
     def winning_move(self,board, piece):
         # Check horizontal locations for win
         for c in range(self.COLUMN_COUNT-3):
@@ -59,9 +63,16 @@ class Connect4Board:
                 if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == piece:
                     return True
 
+    #Checks at a board state if a certain piece can win with their next move
+    #For each check a 1 is appended to a list if the player can win and a 0 if not
+    #This creates a list of values which can then be compared for different board states
+    #Eg if the list of values arent the same from one state to the next it means the other player
+    #blocked a winable move
     def can_win(self, board, piece):
         winning_moves =[]
-        # Check horizontal locations for winable move
+        #For each situation, every case is checked for winable moves,
+        #e.g checking each position in a line of 4 that could result in a winning move
+        #Check horizontal locations for winable move
         for c in range(self.COLUMN_COUNT-3):
             for r in range(self.ROW_COUNT):
                 if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == self.EMPTY:
@@ -76,14 +87,13 @@ class Connect4Board:
                 if board[r][c] == self.EMPTY and board[r][c+1] == piece and board[r][c+2] == piece and board[r][c+3] == piece:
                         #Check if placingin empty col will result in a win
                     row = self.get_next_open_row(board, c)
-
                     if row == r:
                         winning_moves.append(1)
                     else:
                         winning_moves.append(0)
 
                 if board[r][c] == piece and board[r][c+1] == self.EMPTY and board[r][c+2] == piece and board[r][c+3] == piece:
-                        #Check if placingin empty col will result in a win
+                    #Check if placingin empty col will result in a win
                     row = self.get_next_open_row(board, c+1)
                     if row == r:
                         winning_moves.append(1)
@@ -91,10 +101,8 @@ class Connect4Board:
                         winning_moves.append(0)
                 
                 if board[r][c] == piece and board[r][c+1] == piece and board[r][c+2] == self.EMPTY and board[r][c+3] == piece:
-                        #Check if placingin empty col will result in a win
-        
+                    #Check if placingin empty col will result in a win
                     row = self.get_next_open_row(board, c+2)
-        
                     if row == r:
                         winning_moves.append(1)
                     else:
@@ -114,7 +122,6 @@ class Connect4Board:
                 if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == self.EMPTY:
                 
                     row = self.get_next_open_row(board, c+3)
-
                     if row == r+3:
                         winning_moves.append(1)
                     else:
@@ -122,7 +129,6 @@ class Connect4Board:
                 if board[r][c] == self.EMPTY and board[r+1][c+1] == piece and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
                     
                     row = self.get_next_open_row(board, c)
-                    
                     if row == r:
                         winning_moves.append(1)
                     else:
@@ -131,7 +137,6 @@ class Connect4Board:
                 if board[r][c] == piece and board[r+1][c+1] == self.EMPTY and board[r+2][c+2] == piece and board[r+3][c+3] == piece:
                     
                     row = self.get_next_open_row(board, c+1)
-                
                     if row == r+1:
                         winning_moves.append(1)
                     else:
@@ -139,7 +144,6 @@ class Connect4Board:
                 if board[r][c] == piece and board[r+1][c+1] == piece and board[r+2][c+2] == self.EMPTY and board[r+3][c+3] == piece:
                     
                     row = self.get_next_open_row(board, c+2)
-                
                     if row == r+2:
                         winning_moves.append(1)
                     else:
@@ -150,7 +154,6 @@ class Connect4Board:
                 if board[r][c] == piece and board[r-1][c+1] == piece and board[r-2][c+2] == piece and board[r-3][c+3] == self.EMPTY:
                     
                     row = self.get_next_open_row(board, c+3)
-                    
                     if row == r-3:
                         winning_moves.append(1)
                     else:
@@ -179,9 +182,10 @@ class Connect4Board:
                         winning_moves.append(1)
                     else:
                         winning_moves.append(0)
-                    
+          
         return winning_moves
 
+    #Returns all valid cols that a piece can be placed in for the board
     def get_valid_locations(self, board):
         valid_locations = []
         for col in range(self.COLUMN_COUNT):
@@ -189,6 +193,7 @@ class Connect4Board:
                 valid_locations.append(col)
         return valid_locations
 
+    #Searches through the given window (4x4 subgrid of the board) to calculate score for a given move
     def evaluate_window(self,window, piece):
         score = 0
         opp_piece = self.PLAYER1_PIECE
@@ -207,6 +212,7 @@ class Connect4Board:
 
         return score
 
+    #Calculates score for a certain move, for minimax algorithms
     def score_position(self,board, piece):
         score = 0
 
@@ -242,6 +248,7 @@ class Connect4Board:
 
         return score
 
+    #Checks if either player can win or if the board is full
     def is_terminal_node(self,board):
         return self.winning_move(board, self.PLAYER1_PIECE) or self.winning_move(board, self.PLAYER2_PIECE) or len(self.get_valid_locations(board)) == 0
 
