@@ -25,7 +25,7 @@ class AnnAgent250greedy:
         self.random_move_prob = 1
         self.hidden_nodes = 250
         self.training = training
-        self.description = "ANNeGreedy 250 hidden nodes"
+        self.description = "E-Greedy250"
         self.nn_model = self.init_model()
         
 

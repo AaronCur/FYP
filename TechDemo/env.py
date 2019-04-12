@@ -64,42 +64,14 @@ class Connect4Env:
 
         self.totalPlayer1wins = 0
         self.totalPlayer2wins = 0
-        self.myfont = pygame.font.SysFont("monospace", 60)
+        self.myfont = pygame.font.SysFont("monospace", 50)
 
         self.wait_time = 0
         self.paused = False
 
-    ##def reset(self):
-        ##self.board = TicTacToeBoard()
-
-   ## def get_reward(self):
-      ##  return self.board.result()
-
-   ## def make_move(self, move):
-      ##  self.board.push(move)
-
-  ##  def make_random_move(self):
-       ## legal_moves = self.get_legal_moves()
-      ##  move = choice(legal_moves)
-       ## self.make_move(move)
-
-  ##  def get_legal_moves(self):
-        ##return list(self.board.legal_moves)
-   
     def print_board(self,board):
             print(np.flip(board, 0))
-    def drop_piece(self,board, row, col, piece):
-        self.game.drop_piece(board, row, col, piece)
-
-    def is_valid_location(self,board, col):
-        self.game.is_valid_location(board,col)
-
-    def get_next_open_row(self,board, col):
-        self.game.get_next_open_row(board,col)
-
-    def winning_move(self,board, piece):
-        self.game.winning_move(board, piece)
-
+  
     def draw_board(self,board, screen, pygame):
         
         for c in range(self.COLUMN_COUNT):
@@ -122,7 +94,7 @@ class Connect4Env:
         statsPosX = (self.screen.get_rect().width / 4) * 3
 
         agentText = self.myfont.render(
-                " : Agent : ", 1, self.BOARD)
+                ": Agent : ", 1, self.BOARD)
         self.screen.blit(agentText, (statsPosX - 
         agentText.get_rect().width / 2, 100))
         
@@ -155,7 +127,7 @@ class Connect4Env:
         
 
         currentPercent = self.myfont.render(
-                " : Current% : ", 1, self.BOARD)
+                " : Step% : ", 1, self.BOARD)
         self.screen.blit(currentPercent, (statsPosX - 
         currentPercent.get_rect().width / 2, 300))
 
@@ -181,7 +153,7 @@ class Connect4Env:
         currentPercent.get_rect().width / 2), 300))
 
         overall = self.myfont.render(
-                " : Win% : ", 1, self.BOARD)
+                " : Overall% : ", 1, self.BOARD)
         self.screen.blit(overall, (statsPosX - 
         overall.get_rect().width / 2, 400))
 

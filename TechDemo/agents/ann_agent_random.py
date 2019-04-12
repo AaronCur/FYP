@@ -27,7 +27,7 @@ class AnnAgentRandom:
         self.random_move_prob = 1
         self.training = training
         self.hidden_nodes = 22
-        self.description = "ANNeGreedy trained with random moves"
+        self.description = "E-GreedyRnd"
 
         self.nn_model = self.init_model()
 

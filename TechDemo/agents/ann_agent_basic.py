@@ -26,7 +26,7 @@ class AnnAgentBasic:
         self.random_move_prob = 1
         self.hidden_nodes = 250
         self.training = training
-        self.description = "ANN basic 250 hidden nodes"
+        self.description = "ANN Basic"
         self.nn_model = self.init_model()
 
     def getTag(self):
