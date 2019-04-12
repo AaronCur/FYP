@@ -29,22 +29,33 @@ def main():
     game = Connect4Board(SQUARESIZE, RADIUS, COLUMN_COUNT, ROW_COUNT)
     env = Connect4Env(SQUARESIZE,ROW_COUNT,COLUMN_COUNT,game)
 
-   
+    #Keep this on False, all ANNs are trained, if set to true all that data will be over written,
+    # training back to this performance will take hours
     Training = False
+
+    
     #player1 = AnnAgent4(game)
-    player1 = AnnAgent22greedy(game, Training)
-    #player1 = AnnAgent250greedy(game, Training)
+    #player1 = AnnAgent22greedy(game, Training)
+    player1 = AnnAgent250greedy(game, Training)
     #player1 = AnnAgentBasic(game, Training)
     #player1 = AnnAgentMoreRewards(game, Training)
     #player1 = AnnAgentRandom(game, Training)
     #player1 = QAgent(game, Training)
     #player1 = DeepQAgent(game, Training)
 
-    #player2 = HumanAgent()
-    #player2 = RandomAgent()
-    #player2 = BestMoveAgent()
-    player2 = MiniMaxAgent(game)
-    #player2 = RndMiniMaxAgent(game)
+    ##For evaluating learning performance 
+    player2 = RandomAgent()
+
+    ##A combination of training performance and trained performanc vs random tells us how well an approach
+    #learns
+
+    ##For Training 
+    if Training == True:
+        #player2 = HumanAgent()
+        #player2 = BestMoveAgent()
+        player2 = MiniMaxAgent(game)
+        #player2 = RndMiniMaxAgent(game)
+
     
     env.play(player1, player2)
 
