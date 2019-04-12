@@ -1,14 +1,14 @@
 import math
 import random
 import heapq
+import numpy as np
 
 
 class RndMiniMaxAgent():
     def __init__(self, game):
         self.difficulty = 1
-        self.tag = "rnd MiniMax"
+        self.tag = "MiniMax"
         self.game = game
-        self.potential_moves = []
         self.description = self.tag
 
     def makeMove(self ,board, depth, alpha, beta, maximizingPlayer, PIECE):
@@ -32,7 +32,6 @@ class RndMiniMaxAgent():
         if maximizingPlayer:
             value = -math.inf
             column = random.choice(valid_locations)
-            best_moves = {(column, value)}
             for col in valid_locations:
                 row = self.game.get_next_open_row(board, col)
                 b_copy = board.copy()
@@ -41,29 +40,24 @@ class RndMiniMaxAgent():
                 if new_score > value:
                     value = new_score
                     column = col
-                    best_moves = {(column, value)}
-                    #self.potential_moves = [[column, value]]
-                elif new_score == value:
-                    column = col
-                    best_moves = {(column, value)}
-                    #self.potential_moves.append([column, value])
                 alpha = max(alpha, value)
                 if alpha >= beta:
                     break
+            randnumber = np.random.rand(1)
 
+            if randnumber < 0.22:
+                column = random.randint(0, 6)
             
-            #Format best moves array
-            best_moves = tuple(best_moves)
-            #Get a random best move
-            choice = random.choice(best_moves)
-            result_col = choice[0]
-            result_val = choice[1]
-            return result_col, result_val
+            #If the action generated isnt valid, generate again
+            while self.game.is_valid_location(board, column) == False:
+                column = random.randint(0, 6)
+
+
+            return column, value
 
         else: # Minimizing player
             value = math.inf
             column = random.choice(valid_locations)
-            best_moves = {(column, value)}
             for col in valid_locations:
                 row = self.game.get_next_open_row(board, col)
                 b_copy = board.copy()
@@ -72,23 +66,14 @@ class RndMiniMaxAgent():
                 if new_score < value:
                     value = new_score
                     column = col
-                    best_moves = {(column, value)}
-                elif new_score == value:
-                    column = col
-                    best_moves.add((column, value))
                 beta = min(beta, value)
                 if alpha >= beta:
                     break
-            #Format best moves array
-            best_moves = tuple(best_moves)
-            #Get a random best move
-            choice = random.choice(best_moves)
-            result_col = choice[0]
-            result_val = choice[1]
-            return result_col, result_val
+            
+            return column, value
 
     def getTag(self):
         return self.tag
-
+    
     def getDescription(self):
         return self.description

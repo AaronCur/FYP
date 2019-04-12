@@ -8,6 +8,11 @@ from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
 
+##This agent was used to test the impact changing the inputs of the neural newtork would
+# have on performance by making it more symetrical
+#1 = player 1,0 = empty ,-1 = player 2
+# as opposed to 1 = player 1,0 = empty ,2 = player 2
+#Didnt have much of an effect on performance so didnt focus to much on this implementation 
 
 class AnnAgent4:
     def __init__(self, game, initial_games=100, test_games=100, goal_steps=100, lr=1e-2, filename='ann_agent4(part4)_minimax.tflearn'):

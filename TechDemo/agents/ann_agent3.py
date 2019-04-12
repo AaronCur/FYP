@@ -8,6 +8,12 @@ from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
 
+#This implementation explored the concept of ONLY giving rewards to the action that caused 
+#them, instead of giving this reward to al moves that lead to it
+# the idea of this was to stop contradictory data
+# from my testing it was extremly slow to learn duee to the decreased amount of training data
+# there is a possibility that this implementation could have worked but it would have required 10x longer 
+# to train and a PC thats much quicker than the one i have 
 
 class AnnAgent3:
     def __init__(self, game, lr=1e-2, filename='ann_agent3_minimax.tflearn'):

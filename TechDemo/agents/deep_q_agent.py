@@ -8,6 +8,12 @@ from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
 
+#a further building on the Q agent implementation
+#This changes the structure of the ANN once again, 42 inputs and 7 outputs
+#This should result in greater accuracy than the Q agent, howver with more nodes comes more complicated 
+#training and greater time to learn
+# from my testing of this agent over 1000 games it was by far the slowest to learn out of all my approaches
+# i dint manage to train this one to the same performance as the other implementations 
 
 class DeepQAgent:
     def __init__(self, game, training, lr=2e-2, filename="agents/models/Q_Learning/Deep_Q_Agent.tflearn"):
@@ -71,43 +77,7 @@ class DeepQAgent:
         new_Q = (reward * self.discount ** steps) + self.gamma * prev_q
         return new_Q
 
-    def updateQ(self, reward):
-        #board_states = self.reverse_list(self.board_states)
-        if self.training == True:
-            temp = self.board_states[0][1]
-            if self.board_states[0][1] < reward:
-                self.board_states[0][1] = reward
-            for i, state in enumerate(self.board_states):
-                if i > 0:
-                    steps_from_win = i
-                    prev_Q = self.board_states[i-1][1]
-                    new_Q = round(self.calc_Q(
-                        reward, steps_from_win, prev_Q), 3)
-
-                    #Update Q value if the current Q is less then the new Q
-                    if state[1] < new_Q:
-                        state[1] = new_Q
-
-            ##Decrease greedy value
-            if self.random_move_prob > 1.5:
-                self.random_move_prob *= self.random_move_decrease
-            #self.nn_model = self.train_model(self.training_data, self.nn_model)
-        else:
-            pass
-
-    def train_model(self):
-        for state in self.board_states:
-            if state[1] == -1000:
-                print("oops")
-            self.training_data.append(state)
-        self.board_states = []
-        X = np.array([i[0] for i in self.training_data]).reshape(-1, 43, 1)
-        y = np.array([i[1] for i in self.training_data]).reshape(-1, 1)
-        self.nn_model.fit(X, y, n_epoch=20, shuffle=True, run_id=self.filename)
-        self.nn_model.save(self.filename)
-
     
-
     def model(self):
         network = input_data(shape=[None, 42, 1], name='input')
         network = fully_connected(
@@ -117,60 +87,6 @@ class DeepQAgent:
                              learning_rate=self.lr, loss='mean_square', name='target')
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model
-
-    def make_Move(self, board, piece):
-        if piece == 1:
-            otherPiece = 2
-        else:
-            otherPiece = 1
-
-        prev_observation = self.generate_observation(board)
-        predictions = []
-
-        randnumber = np.random.rand(1)
-        ##greedy element
-        if(randnumber < self.random_move_prob and self.training == True):
-            action = random.randint(0, 6)
-
-            while self.game.is_valid_location(board, action) == False:
-                action = random.randint(0, 6)
-        else:
-
-            for action in range(0, 7):
-                predictions.append(self.nn_model.predict(
-                    self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
-                if self.game.is_valid_location(board, action) == False:
-                    predictions[action] = -100000
-
-            action = np.argmax(np.array(predictions))
-
-        if self.training == True:
-            boardCopy = board.copy()
-            row = self.game.get_next_open_row(boardCopy, action)
-            self.game.drop_piece(boardCopy, row, action, piece)
-            score = self.game.score_position(boardCopy, piece)
-
-            boardwins = self.game.can_win(board, otherPiece)
-            otherboardwins = self.game.can_win(boardCopy, otherPiece)
-            ##If there was an oportunity to block the other player
-            #Add to the start of the list, more recent actions are first in the lsit, makes it easier
-            #to distribute award back through previous moves
-            #Instead of having to reverse the list later if i used .append
-
-            self.board_states.insert(0,
-                                     [self.add_action_to_observation(prev_observation, action), -1000])
-
-            if 1 in otherboardwins:
-                self.updateQ(-75)
-
-            ##If a winning move was blocked
-            elif boardwins != otherboardwins:
-                self.updateQ(75)
-
-            else:
-                print("OOps")
-
-        return action
 
     def get_prob(self, inputs):
 

@@ -7,7 +7,13 @@ from tflearn.layers.core import input_data, fully_connected
 from tflearn.layers.estimator import regression
 from statistics import mean
 from collections import Counter
-#EGREEDY
+
+#This implementation builds on the basic ANN by adding rewards for blocking the other player
+#A distinct performance increase was seen as the player learns how to block the other player
+#resulting in a high percentage of draws
+#Exploits when it finds a win even if it might not be the most efficient way to win
+#this raises the problem of exploration of other moves that might lead to beter states
+#or exploiting hoe it knows to win
 
 
 class AnnAgentMoreRewards:
@@ -33,10 +39,10 @@ class AnnAgentMoreRewards:
         return self.description
 
     def generate_observation(self, board):
-        #Flatten board array
+        #Flatten board 2d array into a 1d array
         flattened = np.array(board).reshape(-1, 42, 1)
         return flattened
-
+    #Only load in ANN model if not in training mode
     def add_action_to_observation(self, observation, action):
         return np.append([action], observation)
 
@@ -46,6 +52,10 @@ class AnnAgentMoreRewards:
             nn_model.load(self.filename)
         return nn_model
 
+    #When the game is over, loop through all the board states that were made as a result of the
+    #Ann making moves and append the appropriate reward to each set of state and actions.
+    #then add the resulting list with board states, actions and rewards to training data for training
+    #Board states only record board states for that game, once training begins the board state array is cleared 
     def train(self, reward):
         if self.training == True:
             for val in self.board_states:
@@ -57,7 +67,9 @@ class AnnAgentMoreRewards:
             self.nn_model = self.train_model(self.training_data, self.nn_model)
         else:
             pass
-
+    #Loops through training data splitting it into the input which is board state + action
+    #and outputs which is the reward
+    #The resulting inputs and outputs are fed into model.fit() to train the model
     def train_model(self, training_data, model):
         X = np.array([i[0] for i in training_data]).reshape(-1, 43, 1)
         y = np.array([i[1] for i in training_data]).reshape(-1, 1)
@@ -65,6 +77,9 @@ class AnnAgentMoreRewards:
         model.save(self.filename)
         return model
 
+    #Initialization of the ANN model, consisting of an input layer of 43 nodes
+    #1 hidden layer with 22 nodes
+    #1 output layer consisting of 1 node
     def model(self):
         network = input_data(shape=[None, 43, 1], name='input')
         network = fully_connected(
@@ -75,6 +90,7 @@ class AnnAgentMoreRewards:
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model
 
+    #Function which returns the move the agent wants to play
     def makeMove(self, board, piece):
         if piece == 1:
             otherPiece = 2
@@ -84,6 +100,8 @@ class AnnAgentMoreRewards:
         prev_observation = self.generate_observation(board)
         predictions = []
 
+        #Generate a list of predictions from the ANN model by inputting the current board state
+        #and inputting each action 0-6
         for action in range(0, 7):
             predictions.append(self.nn_model.predict(
                 self.add_action_to_observation(prev_observation, action).reshape(-1, 43, 1)))
