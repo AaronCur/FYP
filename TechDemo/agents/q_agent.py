@@ -130,10 +130,6 @@ class QAgent:
 
             action = np.argmax(np.array(predictions))
 
-        #if move isnt valid redo move
-        #temp = self.game.is_valid_location(board, action)
-
-       # if(self.game.is_valid_location(board, action)):
         if self.training == True:
             boardCopy = board.copy()
             row = self.game.get_next_open_row(boardCopy, action)
@@ -142,14 +138,15 @@ class QAgent:
 
             boardwins = self.game.can_win(board, otherPiece)
             otherboardwins = self.game.can_win(boardCopy, otherPiece)
-            ##If there was an oportunity to block the other player
+           
             #Add to the start of the list, more recent actions are first in the lsit, makes it easier 
             #to distribute award back through previous moves 
             #Instead of having to reverse the list later if i used .append
 
             self.board_states.insert(0,
                                      [self.add_action_to_observation(prev_observation, action), 0])
-
+            
+            ##If there was an oportunity to block the other player
             if 1 in otherboardwins:
                 self.update_values(-75)
 
