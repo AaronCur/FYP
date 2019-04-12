@@ -43,6 +43,9 @@ class DeepQAgent:
     def getTag(self):
         return self.tag
 
+    def getDescription(self):
+        return self.description
+
     def generate_observation(self, board):
         #Flatten board array
         flattened = np.array(board).reshape(-1,42,1)
@@ -111,7 +114,7 @@ class DeepQAgent:
         network = fully_connected(
             network, self.hidden_nodes, activation='relu')
         network = fully_connected(network, 7, activation='linear')
-        network = regression(network, optimizer='adam',
+        network = regression(network, optimizer='SGD',
                              learning_rate=self.lr, loss='mean_square', name='target')
         model = tflearn.DNN(network, tensorboard_dir='log')
         return model

@@ -33,6 +33,9 @@ class AnnAgent22greedy:
     def getTag(self):
         return self.tag
 
+    def getDescription(self):
+        return self.description
+
     def generate_observation(self, board):
         #Flatten board array
         flattened = np.array(board).reshape(-1, 42, 1)

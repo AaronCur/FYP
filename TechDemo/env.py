@@ -177,48 +177,14 @@ class Connect4Env:
 
     def plot_history(self, player1, player2):
         
-        #plt.figure(1)
-        
-        #plt.xlabel('Games Played')
-        #plt.ylabel('Winning Rate %')
         drawsAvg = self.calc_avg(self.drawn_games)
-        #if len(self.drawn_games) != 0:
-         #   plt.plot(self.game_number,self.drawn_games,'b-', label="Draws" + ": " + str(drawsAvg) + "%" )
+   
         player1Avg = self.calc_avg(self.player1_wins)
         player2Avg = self.calc_avg(self.player2_wins)
-        ##For outputting graphs for testing pirposes
-        #if player1.getTag() == "Ann" or player1.getTag()=="Q":
-           # plt.plot(self.game_number,self.player2_wins,'r-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
-           # plt.plot(self.game_number, self.player1_wins, 'g-', label=player1.getTag() + ": " + str(player1Avg) + "%")
-            #plt.title(str(player1.description)+' vs ' + str(player2.description))
-           
-       # elif player2.getTag() == "Ann" or player2.getTag() == "Q":
-           # plt.plot(self.game_number,self.player2_wins,'g-', label=player2.getTag() + ": " + str(player2Avg) + "%")
-            #plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
-            #if player1.training == False:
-               # plt.title('Trained '+ str(player2.description)+' vs ' + str(player1.tag))
-            #else:
-                #plt.title('Training '+ str(player2.description)+' vs ' + str(player1.tag))
-        #else :
-           # plt.plot(self.game_number,self.player2_wins,'y-', label=player2.getTag() + ": " + str(player2Avg) + "%" )
-            #plt.plot(self.game_number, self.player1_wins, 'r-', label=player1.getTag() + ": " + str(player1Avg) + "%")
-            #plt.title(str(player1.description)+' vs ' + str(player2.description))
-           
-
-    
-        #plt.legend()
-
-        #plt.draw()
-        #plt.savefig("graph.png")
-        #graphImg = pygame.image.load("graph.png")
-        #self.screen.fill(self.BG)
-        #self.screen.blit(graphImg, (700,100))
-        #pygame.display.update()
-        #plt.show(block = False)
-
+       
         matplotlib.use("Agg")
         fig = pylab.figure(figsize=[8, 4],  # Inches
-                   dpi=100,        # 100 dots per inch, so the resulting buffer is 400x400 pixels
+                   dpi=100,        # 100 dots per inch, so the resulting buffer is 800x400 pixels
                    )
         ax = fig.gca()
         ax.set_xlabel("Games Played")
@@ -237,10 +203,8 @@ class Connect4Env:
         ax.set_title(str(player1.description)+' vs ' + str(player2.description))
         ax.grid(True)
 
-
         ax.margins(10)
         
-      
         ax.legend()
         canvas = agg.FigureCanvasAgg(fig)
         canvas.draw()
@@ -290,7 +254,7 @@ class Connect4Env:
             player1wins = 0
             player2wins = 0
             draws = 0
-            #self.plot_history(player1, player2)
+          
             for i in range(self.games):
 
                 self.startTurn = 0
@@ -303,7 +267,7 @@ class Connect4Env:
                 self.board = self.game.create_board()
                 print("episode "+ str(i))
                 
-                #self.display_stats(player1,player2)
+         
                 if i == 0:
                     self.plot_history(player1,player2)
                 
@@ -333,7 +297,6 @@ class Connect4Env:
                 pygame.display.flip()
 
                 
-            
                 while not self.game_over:
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
@@ -607,7 +570,7 @@ class Connect4Env:
             percentage = self.win_percentage(draws, self.games)
             self.drawn_games.append(percentage)
             self.game_number.append(self.gameNumber)
-        #self.final_graph(player1,player2)
+      
         threading.Thread(target=self.final_graph,
                         args=(player1, player2)
                        ).start()

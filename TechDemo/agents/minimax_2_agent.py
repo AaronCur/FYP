@@ -63,3 +63,6 @@ class MiniMax2Agent():
 
     def getTag(self):
         return self.tag
+
+    def getDescription(self):
+        return self.tag
